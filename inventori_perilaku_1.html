@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CAT Inventori Perilaku — Poltekimipas</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --primary-light: #1e293b;
+            --accent: #800000;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #15803d;
+            --warning: #b45309;
+            --danger: #b91c1c;
+            --highlight: #e0f2fe;
+            --selected: #0284c7;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        body { margin: 0; background: var(--bg); color: var(--text); -webkit-user-select: none; user-select: none; line-height: 1.5; }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 4px solid var(--accent);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+
+        .logo-title { font-weight: 800; font-size: 1.1rem; letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px; }
+        .timer-box { font-family: monospace; font-size: 1.3rem; font-weight: bold; background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); }
+        .timer-warning { background: var(--danger); animation: pulse 1s infinite; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
+        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+
+        .login-box {
+            max-width: 550px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border-top: 6px solid var(--primary);
+        }
+
+        .disclaimer {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #92400e;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+
+        .q-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 6px solid var(--primary);
+        }
+
+        .q-meta { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .q-text { font-size: 1.1rem; font-weight: 600; color: var(--primary); margin-bottom: 20px; line-height: 1.6; }
+
+        .opt {
+            display: flex;
+            align-items: flex-start;
+            padding: 14px 18px;
+            margin: 10px 0;
+            background: #f8fafc;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .opt:hover { background: var(--highlight); border-color: #93c5fd; }
+        .opt.selected { background: var(--highlight); border-color: var(--selected); color: #0369a1; font-weight: 600; }
+        .opt-key { font-weight: bold; margin-right: 12px; background: #e2e8f0; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.85rem; flex-shrink: 0; }
+        .opt.selected .opt-key { background: var(--selected); color: white; }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .btn:hover { background: var(--primary-light); transform: translateY(-1px); }
+        .btn-secondary { background: #64748b; }
+        .btn-secondary:hover { background: #475569; }
+        .btn-accent { background: var(--accent); }
+        .btn-accent:hover { background: #600000; }
+
+        .nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 8px; margin-top: 20px; background: white; padding: 15px; border-radius: 8px; border: 1px solid var(--border); }
+        .nav-item { height: 38px; display: flex; align-items: center; justify-content: center; background: #f1f5f9; border-radius: 6px; font-size: 0.85rem; cursor: pointer; border: 1px solid var(--border); font-weight: bold; }
+        .nav-item.filled { background: var(--primary); color: white; border-color: var(--primary); }
+        .nav-item.active { outline: 3px solid var(--selected); }
+
+        .review-card { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 15px; }
+        .badge { padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; display: inline-block; }
+        .badge-score { background: #e0f2fe; color: #0369a1; }
+
+        #chart-container { max-width: 550px; margin: 20px auto; }
+
+        @media (max-width: 600px) {
+            .container { padding: 0 10px; }
+            .q-card { padding: 15px; }
+            .btn { width: 100%; margin-bottom: 5px; }
+            .flex-mobile { flex-direction: column; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <!-- HALAMAN MASUK / AWAL -->
+    <div id="login-screen">
+        <div class="login-box">
+            <h2 style="color:var(--primary); margin-top:0; text-align:center;">CAT INVENTORI PERILAKU</h2>
+            <p style="text-align:center; color:var(--text-muted); font-weight:600; margin-top:-10px;">Latihan Seleksi Pendidikan Kedinasan — Poltekimipas</p>
+            
+            <div class="disclaimer">
+                <strong>PENTING:</strong> Aplikasi ini merupakan materi latihan mandiri yang dikembangkan secara mandiri. Jangan mengklaim bahwa soal, dimensi, metode penskoran, norma, atau interpretasi hasilnya merupakan instrumen resmi Poltekimipas.
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight:600; font-size:0.9rem;">Nama Lengkap Peserta:</label>
+                <input type="text" id="inName" placeholder="Masukkan nama Anda..." style="width:100%; padding:12px; margin-top:5px; border:2px solid var(--border); border-radius:6px; font-size:1rem;">
+            </div>
+
+            <div style="background:#f8fafc; padding:15px; border-radius:6px; font-size:0.85rem; margin-bottom:20px; border:1px solid var(--border);">
+                <strong>Petunjuk Pengerjaan:</strong>
+                <p style="margin:5px 0 0 0; font-style:italic;">Pilih respons yang paling menggambarkan kecenderungan perilaku Anda secara umum. Jawablah berdasarkan kebiasaan yang benar-benar Anda kenali, bukan hanya berdasarkan jawaban yang menurut Anda diharapkan orang lain.</p>
+                <ul style="margin: 10px 0 0 0; padding-left: 20px;">
+                    <li>Jumlah Butir: <strong>50 Pernyataan Skala Likert</strong></li>
+                    <li>Durasi: <strong>15 Menit</strong></li>
+                </ul>
+            </div>
+
+            <button class="btn" style="width:100%; padding:14px;" onclick="startTest()">MULAI LATIHAN</button>
+        </div>
+    </div>
+
+    <!-- HALAMAN UJIAN CAT -->
+    <div id="test-screen" style="display:none;">
+        <header>
+            <div class="logo-title">
+                <span>POLTEKIMIPAS CAT INVENTORI</span>
+            </div>
+            <div id="timer" class="timer-box">15:00</div>
+        </header>
+        
+        <div class="container">
+            <div class="q-card">
+                <div class="q-meta">
+                    <span id="q-cat">DIMENSI: -</span>
+                    <span id="q-num">BUTIR 1/50</span>
+                </div>
+                <div id="q-text" class="q-text"></div>
+                <div id="options"></div>
+            </div>
+
+            <div style="display:flex; justify-content: space-between; gap:10px;" class="flex-mobile">
+                <button class="btn btn-secondary" onclick="nav(-1)">&laquo; Sebelumnya</button>
+                <button class="btn btn-accent" onclick="confirmFinish()">Selesaikan Tes &raquo;</button>
+                <button class="btn" onclick="nav(1)">Berikutnya &raquo;</button>
+            </div>
+
+            <div class="nav-grid" id="nav-grid"></div>
+        </div>
+    </div>
+
+    <!-- HALAMAN HASIL & EVALUASI -->
+    <div id="result-screen" style="display:none;" class="container">
+        <div id="pdf-content">
+            <div class="q-card" style="text-align:center; border-top: 8px solid var(--primary);">
+                <h2 style="margin:0; color:var(--primary)">LAPORAN HASIL INVENTORI PERILAKU</h2>
+                <p id="res-name" style="font-weight:bold; color:var(--text-muted); text-transform:uppercase; margin:5px 0; font-size:1.1rem;"></p>
+                <p id="res-date" style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;"></p>
+                <hr style="border:0; border-top:1px solid var(--border);">
+
+                <div style="display:flex; justify-content:center; gap:20px; margin:20px 0;" class="flex-mobile">
+                    <div style="background:#f1f5f9; padding:15px 25px; border-radius:8px;">
+                        <span style="font-size:0.8rem; font-weight:bold; color:var(--text-muted);">SKOR TOTAL RATA-RATA</span>
+                        <h1 id="res-score" style="margin:0; color:var(--primary); font-size:2.5rem;">0</h1>
+                    </div>
+                    <div style="background:#f1f5f9; padding:15px 25px; border-radius:8px;">
+                        <span style="font-size:0.8rem; font-weight:bold; color:var(--text-muted);">INDEKS SKala (0-100)</span>
+                        <h1 id="res-pct" style="margin:0; color:var(--accent); font-size:2.5rem;">0</h1>
+                    </div>
+                </div>
+
+                <div id="chart-container"><canvas id="radarChart"></canvas></div>
+
+                <div id="res-summary" style="text-align:left; background:#f8fafc; padding:20px; border-radius:8px; border:1px solid var(--border); font-size:0.9rem; margin-top:20px;"></div>
+            </div>
+
+            <h3 style="border-left:5px solid var(--accent); padding-left:10px; color:var(--primary);">PEMBAHASAN EDUKATIF SETIAP BUTIR</h3>
+            <div id="review-container"></div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin:30px 0;" class="flex-mobile">
+            <button class="btn btn-secondary" style="flex:1" onclick="location.reload()">Ulangi Latihan</button>
+            <button class="btn" style="flex:2" onclick="downloadPDF()">Unduh Laporan PDF</button>
+        </div>
+    </div>
+
+    <script>
+        // DATA BANK SOAL: TEPAT 50 BUTIR DENGAN 9 DIMENSI
+        const rawQuestions = [
+            // 1. Integritas dan kejujuran (6 Butir)
+            { id: 1, dimension: "Integritas dan kejujuran", statement: "Saya mengakui kesalahan meskipun hal tersebut membuat saya harus memperbaiki pekerjaan dari awal.", direction: "positive", educationalExplanation: "Mengeksplorasi keterbukaan diri dalam memikul tanggung jawab atas kesalahan tanpa mencari-cari alasan." },
+            { id: 2, dimension: "Integritas dan kejujuran", statement: "Saya cenderung menunda mengakui kesalahan ketika khawatir mendapatkan teguran dari atasan.", direction: "negative", educationalExplanation: "Mengeksplorasi hambatan psikologis rasa takut sanksi terhadap dorongan kejujuran operasional." },
+            { id: 3, dimension: "Integritas dan kejujuran", statement: "Saya menyampaikan data laporan sesuai fakta lapangan apa adanya tanpa melebih-lebihkan angka.", direction: "positive", educationalExplanation: "Mengukur tingkat kepatuhan terhadap keakuratan informasi dan transparansi pelaporan." },
+            { id: 4, dimension: "Integritas dan kejujuran", statement: "Saya tetap menjaga kerahasiaan dokumen kedinasan meskipun rekan terdekat mendesak ingin mengetahuinya.", direction: "positive", educationalExplanation: "Menguji ketahanan prinsip kerahasiaan jabatan terhadap tekanan relasi pertemanan." },
+            { id: 5, dimension: "Integritas dan kejujuran", statement: "Saya berani menyampaikan fakta kegagalan pencapaian target kepada tim secara transparan.", direction: "positive", educationalExplanation: "Mengeksplorasi keberanian moral menghadapi realitas obyektif di lingkungan kerja kelompok." },
+            { id: 6, dimension: "Integritas dan kejujuran", statement: "Saya merasa wajar mengambil sedikit fasilitas kantor untuk kepentingan pribadi jika tidak ketahuan.", direction: "negative", educationalExplanation: "Mengeksplorasi integritas moral terhadap aset instansi dan batasan kepatuhan etis." },
+
+            // 2. Disiplin dan kepatuhan terhadap aturan (6 Butir)
+            { id: 7, dimension: "Disiplin dan kepatuhan terhadap aturan", statement: "Saya konsisten mengikuti seluruh ketentuan prosedur operasional standar yang berlaku.", direction: "positive", educationalExplanation: "Menilai konsistensi kepatuhan perilaku terhadap kerangka aturan baku organisasi." },
+            { id: 8, dimension: "Disiplin dan kepatuhan terhadap aturan", statement: "Saya sering mengabaikan ketepatan waktu hadir jika merasa kegiatan dimulai lambat.", direction: "negative", educationalExplanation: "Mengukur tingkat penghargaan terhadap disiplin waktu dan tata tertib formal." },
+            { id: 9, dimension: "Disiplin dan kepatuhan terhadap aturan", statement: "Saya menjalankan setiap instruksi pimpinan secara cermat dan teliti hingga tuntas.", direction: "positive", educationalExplanation: "Menguji ketelitian pelaksanaan instruksi berjenjang dalam rantai komando." },
+            { id: 10, dimension: "Disiplin dan kepatuhan terhadap aturan", statement: "Saya menjaga kerapian dan keteraturan meja kerja serta atribut kedinasan setiap hari.", direction: "positive", educationalExplanation: "Mengeksplorasi keteraturan fisik sebagai cerminan disiplin mental personal." },
+            { id: 11, dimension: "Disiplin dan kepatuhan terhadap aturan", statement: "Saya tetap disiplin menjalankan tugas meskipun pengawas atau pimpinan sedang tidak berada di tempat.", direction: "positive", educationalExplanation: "Mengukur tingkat kemandirian kontrol internal kedisiplinan tanpa pengawasan eksternal." },
+            { id: 12, dimension: "Disiplin dan kepatuhan terhadap aturan", statement: "Saya merasa aturan tata tertib diciptakan hanya sebagai formalitas yang boleh dilanggar sesekali.", direction: "negative", educationalExplanation: "Mengeksplorasi cara pandang normatif terhadap esensi kepatuhan aturan kedinasan." },
+
+            // 3. Tanggung jawab dan ketekunan (6 Butir)
+            { id: 13, dimension: "Tanggung jawab dan ketekunan", statement: "Saya menyelesaikan setiap tugas yang diamanahkan sampai tuntas sebelum beralih ke hal lain.", direction: "positive", educationalExplanation: "Menilai ketuntasan dan komitmen penyelesaian kewajiban penugasan." },
+            { id: 14, dimension: "Tanggung jawab dan ketekunan", statement: "Saya mudah menyerah ketika menghadapi hambatan rumit dalam penyelesaian tugas.", direction: "negative", educationalExplanation: "Mengukur ketahanan mental (*resilience*) dan ketekunan menghadapi kesulitan kerja." },
+            { id: 15, dimension: "Tanggung jawab dan ketekunan", statement: "Saya selalu menepati janji komitmen waktu penyelesaian tugas yang telah saya sepakati.", direction: "positive", educationalExplanation: "Mengeksplorasi akuntabilitas personal terhadap komitmen tenggat waktu." },
+            { id: 16, dimension: "Tanggung jawab dan ketekunan", statement: "Saya berani menghadapi segala konsekuensi atas tindakan atau keputusan yang telah sayaambil.", direction: "positive", educationalExplanation: "Menguji kematangan mental dalam memikul tanggung jawab risiko keputusan." },
+            { id: 17, dimension: "Tanggung jawab dan ketekunan", statement: "Saya menunda-nunda pengerjaan tugas berat hingga mendekati batas waktu penyerahan.", direction: "negative", educationalExplanation: "Menilai kecenderungan prokrastinasi dalam manajemen kewajiban." },
+            { id: 18, dimension: "Tanggung jawab dan ketekunan", statement: "Saya tetap fokus dan bertahan menyelesaikan pekerjaan di tengah situasi tekanan tinggi.", direction: "positive", educationalExplanation: "Mengukur stabilitas kinerja produktif dalam kondisi penugasan intensif." },
+
+            // 4. Pengendalian diri dan regulasi emosi (6 Butir)
+            { id: 19, dimension: "Pengendalian diri dan regulasi emosi", statement: "Saya mampu menjaga ketenangan nada bicara dan respons ketika menerima kritik tajam.", direction: "positive", educationalExplanation: "Menilai kematangan regulasi emosi menghadapi umpan balik negatif." },
+            { id: 20, dimension: "Pengendalian diri dan regulasi emosi", statement: "Saya mudah terpancing emosi dan tersinggung apabila pendapat saya ditolak orang lain.", direction: "negative", educationalExplanation: "Mengeksplorasi sensitivitas ego dan ketahanan stabilitas afektif." },
+            { id: 21, dimension: "Pengendalian diri dan regulasi emosi", statement: "Saya mampu mengelola rasa frustrasi dengan baik ketika menghadapi kendala sistem kerja.", direction: "positive", educationalExplanation: "Mengukur kemampuan koping stres dalam situasi hambatan operasional." },
+            { id: 22, dimension: "Pengendalian diri dan regulasi emosi", statement: "Saya selalu mempertimbangkan dampak akibat jangka panjang sebelum melampiaskan kemarahan.", direction: "positive", educationalExplanation: "Menilai kontrol impulsivitas perilaku dalam situasi konflik." },
+            { id: 23, dimension: "Pengendalian diri dan regulasi emosi", statement: "Saya memerlukan waktu yang sangat lama untuk memulihkan konsentrasi setelah ditegur.", direction: "negative", educationalExplanation: "Mengukur fleksibilitas pemulihan mental (*recovery rate*) pasca tekanan." },
+            { id: 24, dimension: "Pengendalian diri dan regulasi emosi", statement: "Saya dapat mengendalikan diri dengan baik di tengah situasi lingkungan yang memprovokasi.", direction: "positive", educationalExplanation: "Menguji ketahanan psikologis terhadap pengaruh distraksi emosional eksternal." },
+
+            // 5. Kerja sama dan hubungan interpersonal (6 Butir)
+            { id: 25, dimension: "Kerja sama dan hubungan interpersonal", statement: "Saya mendengarkan secara aktif pandangan rekan kerja yang berbeda pendapat dengan saya.", direction: "positive", educationalExplanation: "Menilai keterbukaan perspektif dalam kolaborasi tim majemuk." },
+            { id: 26, dimension: "Kerja sama dan hubungan interpersonal", statement: "Saya enggan membantu rekan satu tim yang sedang kesulitan jika itu bukan tugas resmi saya.", direction: "negative", educationalExplanation: "Mengeksplorasi orientasi solidaritas kolektif dan dukungan sejawat." },
+            { id: 27, dimension: "Kerja sama dan hubungan interpersonal", statement: "Saya berkontribusi secara aktif memberikan gagasan konstruktif dalam diskusi kelompok.", direction: "positive", educationalExplanation: "Mengukur tingkat partisipasi produktif dalam dinamika kerja sama tim." },
+            { id: 28, dimension: "Kerja sama dan hubungan interpersonal", statement: "Saya berupaya menyelesaikan konflik antarrekan secara damai melalui komunikasi terbuka.", direction: "positive", educationalExplanation: "Menilai keterampilan resolusi konflik interpersonal secara profesional." },
+            { id: 29, dimension: "Kerja sama dan hubungan interpersonal", statement: "Saya menjaga batasan komunikasi profesional yang sopan dalam relasi kerja sehari-hari.", direction: "positive", educationalExplanation: "Menguji pemahaman etika batas profesionalisme sosial instansi." },
+            { id: 30, dimension: "Kerja sama dan hubungan interpersonal", statement: "Saya suka mendominasi percakapan kelompok dan mengabaikan masukan anggota lain.", direction: "negative", educationalExplanation: "Mengeksplorasi kecenderungan perilaku egosentris dalam kepemimpinan kelompok." },
+
+            // 6. Pelayanan publik dan orientasi membantu (5 Butir)
+            { id: 31, dimension: "Pelayanan publik dan orientasi membantu", statement: "Saya bersikap adil dan ramah kepada setiap warga yang memerlukan layanan tanpa membeda-bedakan.", direction: "positive", educationalExplanation: "Menilai komitmen prinsip kesetaraan pelayanan publik yang egaliter." },
+            { id: 32, dimension: "Pelayanan publik dan orientasi membantu", statement: "Saya mengabaikan keluhan masyarakat jika jam pelayanan resmi hampir selesai.", direction: "negative", educationalExplanation: "Mengukur orientasi empati pelayanan publik dan kepedulian sosial." },
+            { id: 33, dimension: "Pelayanan publik dan orientasi membantu", statement: "Saya mendengarkan dengan penuh kesabaran keluhan kebutuhan masyarakat di loket.", direction: "positive", educationalExplanation: "Mengeksplorasi kesabaran mendengarkan (*active listening*) kebutuhan pemohon." },
+            { id: 34, dimension: "Pelayanan publik dan orientasi membantu", statement: "Saya membantu masyarakat menyelesaikan kendala administratif tanpa mengharapkan imbalan.", direction: "positive", educationalExplanation: "Menguji ketulusan orientasi pelayanan prima berintegritas tinggi." },
+            { id: 35, dimension: "Pelayanan publik dan orientasi membantu", statement: "Saya memberikan perlakuan khusus atau keistimewaan pelayanan kepada kerabat dekat saya.", direction: "negative", educationalExplanation: "Mengeksplorasi potensi pelanggaran objektivitas pelayanan akibat kedekatan personal." },
+
+            // 7. Ketelitian dan keteraturan kerja (5 Butir)
+            { id: 36, dimension: "Ketelitian dan keteraturan kerja", statement: "Saya selalu memeriksa kembali hasil pekerjaan tulis sebelum diserahkan kepada atasan.", direction: "positive", educationalExplanation: "Menilai kebiasaan verifikasi mandiri untuk meminimalkan kesalahan ketidakcermatan." },
+            { id: 37, dimension: "Ketelitian dan keteraturan kerja", statement: "Saya sering mengabaikan detail kecil dalam penyusunan dokumen administratif kedinasan.", direction: "negative", educationalExplanation: "Mengukur tingkat kepedulian terhadap akurasi detail data administratif." },
+            { id: 38, dimension: "Ketelitian dan keteraturan kerja", statement: "Saya merapikan arsip dokumen kerja ke dalam folder terstruktur agar mudah ditemukan kembali.", direction: "positive", educationalExplanation: "Mengeksplorasi keteraturan sistem manajemen pengarsipan dokumen." },
+            { id: 39, dimension: "Ketelitian dan keteraturan kerja", statement: "Saya bekerja dengan tergesa-gesa sehingga sering membuat kecerobohan yang tidak perlu.", direction: "negative", educationalExplanation: "Menilai keseimbangan tempo kecepatan kerja dan tingkat ketelitian." },
+            { id: 40, dimension: "Ketelitian dan keteraturan kerja", statement: "Saya memastikan keabsahan informasi dan sumber data sebelum menyebarkannya kepada orang lain.", direction: "positive", educationalExplanation: "Menguji kehati-hatian verifikasi fakta sebelum diseminasi informasi." },
+
+            // 8. Ketegasan dan keberanian menyampaikan pendapat (5 Butir)
+            { id: 41, dimension: "Ketegasan dan keberanian menyampaikan pendapat", statement: "Saya menyampaikan keberatan secara profesional ketika mendapati instruksi yang menyimpang.", direction: "positive", educationalExplanation: "Menilai keberanian moral menyuarakan koreksi prosedural secara santun." },
+            { id: 42, dimension: "Ketegasan dan keberanian menyampaikan pendapat", statement: "Saya memilih diam dan mengikuti arus mayoritas meskipun saya tahu keputusan tersebut keliru.", direction: "negative", educationalExplanation: "Mengukur tingkat konformitas pasif terhadap keputusan yang salah." },
+            { id: 43, dimension: "Ketegasan dan keberanian menyampaikan pendapat", statement: "Saya mempertahankan argumen logis saya disertai data pendukung yang valid dalam diskusi.", direction: "positive", educationalExplanation: "Mengeksplorasi ketegasan rasional berbasis bukti empiris." },
+            { id: 44, dimension: "Ketegasan dan keberanian menyampaikan pendapat", statement: "Saya berani menolak permintaan bantuan rekan yang meminta dilakukannya cara-cara tidak patut.", direction: "positive", educationalExplanation: "Menguji ketegasan sikap penolakan terhadap pelanggaran etika kolektif." },
+            { id: 45, dimension: "Ketegasan dan keberanian menyampaikan pendapat", statement: "Saya menyampaikan kritik dengan nada suara tinggi dan menyerang pribadi orang lain.", direction: "negative", educationalExplanation: "Menilai proporsionalitas komunikasi asertif agar tidak berubah menjadi agresif." },
+
+            // 9. Adaptabilitas dan fleksibilitas (5 Butir)
+            { id: 46, dimension: "Adaptabilitas dan fleksibilitas", statement: "Saya cepat menyesuaikan diri ketika terjadi perubahan sistem penugasan mendadak.", direction: "positive", educationalExplanation: "Menilai kelenturan psikologis menghadapi dinamika perubahan lingkungan." },
+            { id: 47, dimension: "Adaptabilitas dan fleksibilitas", statement: "Saya merasa cemas dan kesulitan menerima cara kerja baru yang belum pernah saya kenal.", direction: "negative", educationalExplanation: "Mengukur tingkat resistensi psikologis terhadap inovasi metode operasional." },
+            { id: 48, dimension: "Adaptabilitas dan fleksibilitas", statement: "Saya bersedia mengubah strategi kerja ketika evaluasi menunjukkan metode lama kurang efektif.", direction: "positive", educationalExplanation: "Mengeksplorasi keterbukaan adaptif terhadap perbaikan strategi berkelanjutan." },
+            { id: 49, dimension: "Adaptabilitas dan fleksibilitas", statement: "Saya tetap dapat produktif menyelesaikan tugas meskipun kondisi fasilitas kerja berubah.", direction: "positive", educationalExplanation: "Menguji ketahanan produktivitas di tengah keterbatasan fasilitas dinamis." },
+            { id: 50, dimension: "Adaptabilitas dan fleksibilitas", statement: "Saya mengevaluasi pengalaman koreksi masa lalu untuk memperbaiki pola perilaku masa depan.", direction: "positive", educationalExplanation: "Menilai kapasitas pembelajaran reflektif diri dari pengalaman empiris." }
+        ];
+
+        // VARIABEL DAN STATE APLIKASI
+        let userAnswers = {};
+        let currentIdx = 0;
+        let timerInterval = null;
+        let totalTimeSeconds = 15 * 60; // 15 Menit sesuai spesifikasi Bagian VII.D
+        let startTimeStamp = 0;
+
+        // FUNGSI MEMULAI TES
+        function startTest() {
+            const nameInput = document.getElementById('inName').value.trim();
+            if (nameInput.length < 3) {
+                alert("Harap masukkan nama lengkap Anda (minimal 3 karakter) secara valid!");
+                return;
+            }
+
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('test-screen').style.display = 'block';
+
+            startTimeStamp = Date.now();
+            initNavGrid();
+            renderQuestion();
+            startTimer();
+        }
+
+        // TIMER AKURAT BERBASIS TIMESTAMP
+        function startTimer() {
+            const timerDisplay = document.getElementById('timer');
+            
+            timerInterval = setInterval(() => {
+                const elapsedSeconds = Math.floor((Date.now() - startTimeStamp) / 1000);
+                const remainingSeconds = totalTimeSeconds - elapsedSeconds;
+
+                if (remainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.innerText = "00:00";
+                    alert("Waktu pengerjaan 15 menit telah habis! Sistem memproses hasil secara otomatis.");
+                    autoSubmit();
+                    return;
+                }
+
+                if (remainingSeconds <= 180) { // Peringatan 3 menit terakhir
+                    timerDisplay.classList.add('timer-warning');
+                }
+
+                const m = Math.floor(remainingSeconds / 60);
+                const s = remainingSeconds % 60;
+                timerDisplay.innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+            }, 1000);
+        }
+
+        // INISIALISASI NAVIGASI GRID
+        function initNavGrid() {
+            const grid = document.getElementById('nav-grid');
+            grid.innerHTML = '';
+            rawQuestions.forEach((_, i) => {
+                const item = document.createElement('div');
+                item.className = 'nav-item';
+                item.id = `nav-item-${i}`;
+                item.innerText = i + 1;
+                item.onclick = () => { currentIdx = i; renderQuestion(); };
+                grid.appendChild(item);
+            });
+        }
+
+        // RENDER TAMPILAN BUTIR PERNYATAAN
+        function renderQuestion() {
+            const q = rawQuestions[currentIdx];
+            
+            document.getElementById('q-cat').innerText = `DIMENSI: ${q.dimension.toUpperCase()}`;
+            document.getElementById('q-num').innerText = `BUTIR ${currentIdx + 1} / ${rawQuestions.length}`;
+            document.getElementById('q-text').innerText = q.statement;
+
+            const optsContainer = document.getElementById('options');
+            optsContainer.innerHTML = '';
+
+            // 5 Pilihan Respons Skala Likert
+            const likertOptions = [
+                "1. Sangat Tidak Sesuai",
+                "2. Tidak Sesuai",
+                "3. Netral / Kadang-kadang Sesuai",
+                "4. Sesuai",
+                "5. Sangat Sesuai"
+            ];
+
+            const keys = ['1', '2', '3', '4', '5'];
+            likertOptions.forEach((optText, optIdx) => {
+                const optDiv = document.createElement('div');
+                const isSelected = userAnswers[currentIdx] === (optIdx + 1);
+                optDiv.className = `opt ${isSelected ? 'selected' : ''}`;
+                
+                // Pemilihan jawaban langsung merekam nilai
+                optDiv.onclick = () => selectOption(optIdx + 1);
+
+                const keySpan = document.createElement('span');
+                keySpan.className = 'opt-key';
+                keySpan.innerText = keys[optIdx];
+
+                const textSpan = document.createElement('span');
+                textSpan.innerText = optText;
+
+                optDiv.appendChild(keySpan);
+                optDiv.appendChild(textSpan);
+                optsContainer.appendChild(optDiv);
+            });
+
+            // Update Navigasi Grid Visual
+            document.querySelectorAll('.nav-item').forEach((el, idx) => {
+                el.classList.remove('active');
+                if (userAnswers[idx] !== undefined) el.classList.add('filled');
+                if (idx === currentIdx) el.classList.add('active');
+            });
+
+            window.scrollTo(0, 0);
+        }
+
+        // PILIH OPSI DAN AUTO-NEXT
+        function selectOption(val) {
+            userAnswers[currentIdx] = val;
+            renderQuestion();
+
+            // Berpindah otomatis ke butir berikutnya dengan jeda singkat yang nyaman
+            if (currentIdx < rawQuestions.length - 1) {
+                setTimeout(() => {
+                    currentIdx++;
+                    renderQuestion();
+                }, 200);
+            }
+        }
+
+        // NAVIGASI TOMBOL SEBELUMNYA / BERIKUTNYA
+        function nav(dir) {
+            const newIdx = currentIdx + dir;
+            if (newIdx >= 0 && newIdx < rawQuestions.length) {
+                currentIdx = newIdx;
+                renderQuestion();
+            }
+        }
+
+        // VALIDASI SEBELUM MENYELESAIKAN TES
+        function confirmFinish() {
+            const answeredCount = Object.keys(userAnswers).length;
+            const unanswered = rawQuestions.length - answeredCount;
+
+            let msg = `Anda telah menjawab ${answeredCount} dari ${rawQuestions.length} butir pernyataan.`;
+            if (unanswered > 0) {
+                msg += `\nMasih ada ${unanswered} butir yang BELUM dijawab. Apakah Anda yakin ingin mengumpulkan tes?`;
+            } else {
+                msg += `\nSeluruh butir telah dijawab. Yakin ingin mengakhiri sesi latihan ini?`;
+            }
+
+            if (confirm(msg)) {
+                finishTest();
+            }
+        }
+
+        function autoSubmit() {
+            finishTest();
+        }
+
+        // HITUNG PENSKORAN, KONVERSI SKALA 0-100, DAN EVALUASI HASIL
+        function finishTest() {
+            clearInterval(timerInterval);
+
+            document.getElementById('test-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+
+            let dimensionData = {};
+
+            // Inisialisasi struktur dimensi
+            rawQuestions.forEach(q => {
+                if (!dimensionData[q.dimension]) {
+                    dimensionData[q.dimension] = { rawSum: 0, count: 0 };
+                }
+            });
+
+            let totalAdjustedSum = 0;
+            let totalAnsweredCount = 0;
+
+            rawQuestions.forEach((q, i) => {
+                const rawResp = userAnswers[i];
+                let adjustedScore = 3; // Default netral jika kosong
+
+                if (rawResp !== undefined) {
+                    // Sistem Pembalikan Skor (Bagian V.B): 
+                    // Butir positif: 1->1, 2->2, 3->3, 4->4, 5->5
+                    // Butir negatif: 1->5, 2->4, 3->3, 4->2, 5->1
+                    if (q.direction === 'positive') {
+                        adjustedScore = rawResp;
+                    } else {
+                        adjustedScore = 6 - rawResp;
+                    }
+                    totalAnsweredCount++;
+                }
+
+                totalAdjustedSum += adjustedScore;
+                dimensionData[q.dimension].rawSum += adjustedScore;
+                dimensionData[q.dimension].count += 1;
+            });
+
+            // Rata-rata Total Keseluruhan
+            const overallAverage = totalAdjustedSum / rawQuestions.length;
+            // Konversi skala 0-100 menggunakan rumus baku (Bagian V.C): ((rata-rata skor - 1) / 4) * 100
+            const overallIndex0100 = ((overallAverage - 1) / 4) * 100;
+
+            const userName = document.getElementById('inName').value;
+            document.getElementById('res-name').innerText = `PESERTA: ${userName}`;
+            document.getElementById('res-date').innerText = `Waktu Selesai: ${new Date().toLocaleString('id-ID')}`;
+            document.getElementById('res-score').innerText = overallAverage.toFixed(2) + ' / 5.00';
+            document.getElementById('res-pct').innerText = overallIndex0100.toFixed(1);
+
+            // Hitung skor per dimensi untuk grafik dan ringkasan
+            let dimLabels = [];
+            let dimPercentages = [];
+            let dimensionReportHTML = `<strong>RINGKASAN SKOR PER DIMENSI (SKALA 0–100):</strong><br><br>`;
+            dimensionReportHTML += `<table style="width:100%; border-collapse:collapse; margin-bottom:15px; font-size:0.85rem;">`;
+            dimensionReportHTML += `<tr><th>Dimensi Perilaku</th><th>Rata-rata Skor</th><th>Indeks (0-100)</th><th>Kategori Deskriptif</th></tr>`;
+
+            Object.keys(dimensionData).forEach(dim => {
+                const d = dimensionData[dim];
+                const avg = d.rawSum / d.count;
+                const idx0100 = ((avg - 1) / 4) * 100;
+
+                dimLabels.push(dim);
+                dimPercentages.push(idx0100.toFixed(1));
+
+                // Kategori Deskriptif (Bagian V.D)
+                let categoryLabel = "Relatif Menengah";
+                if (idx0100 >= 70) categoryLabel = "Relatif Lebih Tinggi";
+                else if (idx0100 < 45) categoryLabel = "Relatif Lebih Rendah";
+
+                dimensionReportHTML += `<tr>
+                    <td><strong>${dim}</strong></td>
+                    <td>${avg.toFixed(2)}</td>
+                    <td><strong>${idx0100.toFixed(1)}</strong></td>
+                    <td><span class="badge" style="background:${idx0100 >= 70 ? '#dcfce7; color:#14532d' : idx0100 < 45 ? '#fee2e2; color:#991b1b' : '#fef08a; color:#713f12'}">${categoryLabel}</span></td>
+                </tr>`;
+            });
+            dimensionReportHTML += `</table>`;
+            dimensionReportHTML += `<p><em>Catatan Interpretasi: Hasil ini merupakan gambaran laporan diri (self-report) atas kecenderungan perilaku dalam latihan mandiri dan bukan merupakan diagnosis psikologis klinis maupun standar kelulusan resmi seleksi Poltekimipas.</em></p>`;
+
+            document.getElementById('res-summary').innerHTML = dimensionReportHTML;
+
+            // Render Grafik Radar
+            renderRadarChart(dimLabels, dimPercentages);
+
+            // Render Pembahasan Edukatif Per Butir
+            renderReview();
+
+            window.scrollTo(0, 0);
+        }
+
+        // RENDER GRAFIK RADAR DIMENSI
+        function renderRadarChart(labels, dataValues) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Indeks Dimensi Perilaku (Skala 0-100)',
+                        data: dataValues,
+                        backgroundColor: 'rgba(15, 23, 42, 0.15)',
+                        borderColor: '#0f172a',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#800000'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 100,
+                            ticks: { stepSize: 20 }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        // PEMBAHASAN EDUKATIF UNTUK SETIAP BUTIR
+        function renderReview() {
+            const container = document.getElementById('review-container');
+            container.innerHTML = '';
+
+            const likertTexts = [
+                "1. Sangat Tidak Sesuai",
+                "2. Tidak Sesuai",
+                "3. Netral / Kadang-kadang Sesuai",
+                "4. Sesuai",
+                "5. Sangat Sesuai"
+            ];
+
+            rawQuestions.forEach((q, i) => {
+                const userResp = userAnswers[i];
+                const card = document.createElement('div');
+                card.className = 'review-card';
+
+                let adjustedScore = 3;
+                let userRespText = "Belum Dijawab (Skor Default Netral: 3)";
+
+                if (userResp !== undefined) {
+                    userRespText = `${userResp}. ${likertTexts[userResp - 1]}`;
+                    if (q.direction === 'positive') {
+                        adjustedScore = userResp;
+                    } else {
+                        adjustedScore = 6 - userResp;
+                    }
+                }
+
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-muted); font-weight:bold; margin-bottom:8px;">
+                        <span>BUTIR NO. ${i + 1} | DIMENSI: ${q.dimension.toUpperCase()}</span>
+                        <span class="badge badge-score">Skor Penyesuaian: ${adjustedScore} / 5</span>
+                    </div>
+                    <div style="font-size:1rem; font-weight:600; margin-bottom:10px; color:var(--primary);">"${q.statement}"</div>
+                    <div style="background:#f8fafc; padding:10px 14px; border-radius:6px; font-size:0.9rem; margin-bottom:12px; border:1px solid var(--border);">
+                        <strong>Respons Anda:</strong> ${userRespText} <br>
+                        <strong>Arah Penskoran:</strong> ${q.direction.toUpperCase()} (${q.direction === 'positive' ? 'Skor Langsung' : 'Skor Dibalik'})
+                    </div>
+                    <div style="background:#f1f5f9; padding:12px; border-radius:6px; font-size:0.85rem; border-left:4px solid var(--primary);">
+                        <strong>Penjelasan Perilaku:</strong> ${q.educationalExplanation}<br><br>
+                        <em>Saran Refleksi:</em> Inventori berbasis laporan diri ini menggambarkan persepsi Anda mengenai kebiasaan sehari-hari. Evaluasi konsistensi respons Anda untuk pengembangan karakter kedinasan yang profesional dan berintegritas.
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // UNDUH LAPORAN DALAM FORMAT PDF
+        function downloadPDF() {
+            const element = document.getElementById('pdf-content');
+            const userName = document.getElementById('inName').value || 'Peserta';
+            const opt = {
+                margin: 8,
+                filename: `Laporan_Inventori_Perilaku_Poltekimipas_${userName}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 1.5 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().from(element).set(opt).save();
+        }
+    </script>
+</body>
+</html>

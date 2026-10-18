@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAT Forced-Choice - Latihan Seleksi Poltekimipas</title>
+    <!-- Chart.js untuk Grafik Hasil -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #0A192F;
+            --accent: #D4AF37;
+            --bg: #F4F1EA;
+            --card-bg: #FFFFFF;
+            --text: #2C3E50;
+            --soft-rose: #FADBD8;
+            --soft-lavender: #E8DAEF;
+            --border: #D5D8DC;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            user-select: none;
+        }
+
+        #quiz-container {
+            width: 95%;
+            max-width: 950px;
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 12px 35px rgba(10, 25, 47, 0.08);
+            border-top: 8px solid var(--primary);
+            margin-bottom: 40px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 18px;
+        }
+
+        .header h2 {
+            color: var(--primary);
+            margin: 0;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-size: 1.4em;
+            font-weight: 700;
+        }
+
+        .header p {
+            margin: 6px 0 0;
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-size: 0.9em;
+        }
+
+        .instruction-box {
+            text-align: left;
+            background: #F8F9F9;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid var(--primary);
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .disclaimer-box {
+            background: #FDF2E9;
+            border-left: 5px solid #E67E22;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1em;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-primary:hover {
+            background: #1B2631;
+            box-shadow: 0 4px 12px rgba(10, 25, 47, 0.2);
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .timer-box {
+            background: var(--soft-rose);
+            color: #C0392B;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.95em;
+        }
+
+        .forced-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .forced-table th, .forced-table td {
+            border: 1px solid var(--border);
+            padding: 12px;
+            text-align: center;
+        }
+
+        .forced-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .forced-table td.statement {
+            text-align: left;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+
+        .radio-btn {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        #question-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+            gap: 6px;
+            margin-top: 30px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        .grid-item {
+            font-size: 12px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #EAEDED;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--text);
+            transition: 0.2s;
+        }
+
+        .grid-item.filled { background: var(--accent); color: white; }
+        .grid-item.current { border: 2px solid var(--primary); font-weight: bold; }
+
+        /* Halaman Hasil */
+        .result-section {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .profile-badge {
+            background: var(--primary);
+            color: #fff;
+            padding: 20px 25px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .profile-badge h1 { margin: 0; font-size: 1.8em; letter-spacing: 1px; color: var(--accent); }
+        .profile-badge h3 { margin: 5px 0 0; color: #fff; font-weight: 400; font-size: 1.1em; }
+
+        .charts-container {
+            width: 100%;
+            max-width: 700px;
+            margin: 30px auto;
+            background: #fafafa;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .info-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-left: 5px solid var(--accent);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            line-height: 1.6;
+        }
+
+        .info-card h4 { margin-top: 0; color: var(--primary); font-size: 1.1em; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        .info-card ul { margin: 0; padding-left: 20px; }
+        .info-card li { margin-bottom: 6px; }
+
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.85em;
+            color: #7F8C8D;
+            width: 100%;
+        }
+
+        @media print {
+            body { background: #fff; padding: 0; }
+            #quiz-container { box-shadow: none; border: none; width: 100%; max-width: 100%; }
+            .btn-primary, footer, .nav-controls, #question-grid { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <div class="header">
+        <h2>Latihan CAT Persiapan Seleksi Poltekimipas</h2>
+        <p>FORCED-CHOICE PERSONALITY INVENTORY (50 SOAL)</p>
+    </div>
+
+    <!-- AREA LOGIN / INSTRUKSI -->
+    <div id="login-area">
+        <div class="disclaimer-box">
+            <strong>Catatan Penting:</strong> Instrumen ini merupakan alat latihan pengenalan kecenderungan perilaku dan pengambilan keputusan pribadi, <strong>bukan alat tes resmi Poltekimipas</strong> dan bukan instrumen yang telah tervalidasi untuk seleksi resmi. Hasil latihan ini tidak menjamin kelulusan seleksi.
+        </div>
+        <div class="instruction-box">
+            <strong>Petunjuk Pengerjaan:</strong><br>
+            1. Terdapat 50 nomor soal. Setiap nomor berisi 4 pernyataan perilaku yang berbeda[cite: 1].<br>
+            2. Anda wajib memilih tepat 1 (satu) pilihan <strong>MOST (Paling menggambarkan diri Anda)</strong>[cite: 1].<br>
+            3. Anda wajib memilih tepat 1 (satu) pilihan <strong>LEAST (Paling tidak menggambarkan diri Anda)</strong>[cite: 1].<br>
+            4. Pilihan MOST dan LEAST <strong>tidak boleh</strong> berasal dari pernyataan yang sama dalam nomor yang sama[cite: 1].<br>
+            5. Waktu pengerjaan tes adalah <strong>20 menit</strong>. Tes akan otomatis berakhir jika waktu habis[cite: 1].
+        </div>
+        <div class="form-group">
+            <label>Nama Lengkap Peserta:</label>
+            <input type="text" id="user-name" placeholder="Masukkan nama lengkap Anda..." required>
+        </div>
+        <br>
+        <button class="btn-primary" onclick="startTest()">MULAI LATIHAN SEKARANG</button>
+    </div>
+
+    <!-- KONTEN TES -->
+    <div id="test-content" style="display: none;">
+        <div class="top-bar">
+            <div id="progress-text">Soal 1 / 50</div>
+            <div class="timer-box" id="timer-display">Waktu: 20:00</div>
+        </div>
+        <div id="question-wrapper"></div>
+        <div class="nav-controls">
+            <button id="prevBtn" class="btn-primary" style="background:#7F8C8D;" onclick="changeQuestion(-1)">KEMBALI</button>
+            <button id="nextBtn" class="btn-primary" onclick="changeQuestion(1)">BERIKUTNYA</button>
+        </div>
+        <div id="question-grid"></div>
+    </div>
+
+    <!-- HALAMAN HASIL -->
+    <div id="result-area" class="result-section" style="display: none;">
+        <div class="profile-badge">
+            <h3 id="res-participant">NAMA PESERTA</h3>
+            <h1>LAPORAN PROFIL KECENDERUNGAN PERILAKU</h1>
+            <p style="margin-top:5px; color:#F4F1EA; font-size:0.9em;">Simulasi Latihan Mandiri CAT Poltekimipas</p>
+        </div>
+
+        <div class="info-card">
+            <h4>Ringkasan Sesi Latihan</h4>
+            <p id="res-summary-details"></p>
+        </div>
+
+        <!-- GRAFIK DIMENSI -->
+        <div class="charts-container">
+            <h4 style="color:var(--primary); margin-top:0;">Profil Skor Sembilan Dimensi Perilaku</h4>
+            <canvas id="dimensionChart"></canvas>
+        </div>
+
+        <div id="interpretation-box"></div>
+
+        <div class="disclaimer-box" style="margin-top: 25px;">
+            <strong>Keterangan Hasil:</strong> Scoring ini adalah model heuristik untuk latihan refleksi diri, bukan metode scoring psikometrik tervalidasi. Skor ini tidak mengukur karakter secara objektif dan tidak dapat digunakan untuk memprediksi hasil seleksi resmi.
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn-primary" onclick="location.reload()">ULANGI LATIHAN</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    &copy; 2026 PERSONA RESEARCH & CONSULTING
+</footer>
+
+<script>
+    // 9 DIMENSI PEMETAAN
+    const dimensions = [
+        "1. Integritas dan kejujuran",
+        "2. Disiplin dan kepatuhan terhadap aturan",
+        "3. Tanggung jawab dan ketekunan",
+        "4. Pengendalian diri dan regulasi emosi",
+        "5. Kerja sama dan hubungan interpersonal",
+        "6. Orientasi pelayanan dan kepedulian",
+        "7. Ketelitian, keteraturan, dan kehati-hatian",
+        "8. Ketegasan dan keberanian berpendapat",
+        "9. Adaptabilitas dan menghadapi perubahan"
+    ];
+
+    // 50 SOAL FORCED-CHOICE LENGKAP DENGAN 4 PERNYATAAN DAN DIMENSI MASING-MASING (0-8)
+    const items = [
+        { id: 1, options: [
+            { text: "Saya cenderung menyusun urutan pekerjaan berdasarkan prioritas dan tenggat waktu yang ketat.", dim: 2 },
+            { text: "Saya memastikan setiap detail dokumen telah diperiksa berulang kali sebelum diserahkan.", dim: 6 },
+            { text: "Saya berkoordinasi secara aktif dengan rekan kerja agar tugas tim berjalan lancar.", dim: 4 },
+            { text: "Saya tetap menjalankan rencana awal secara konsisten meskipun situasi mulai berubah.", dim: 1 }
+        ]},
+        { id: 2, options: [
+            { text: "Saya langsung mengakui kekeliruan tugas secara terbuka dan segera memperbaikinya.", dim: 0 },
+            { text: "Saya mematuhi seluruh Standar Operasional Prosedur (SOP) secara disiplin tanpa pengecualian.", dim: 1 },
+            { text: "Saya mendengarkan masukan dari rekan setim dengan kepala dingin sebelum mengambil sikap.", dim: 3 },
+            { text: "Saya membantu rekan kerja yang kesulitan menyelesaikan tugasnya demi target bersama.", dim: 5 }
+        ]},
+        { id: 3, options: [
+            { text: "Saya tetap tenang dan tidak terpancing emosi ketika menerima kritik tajam.", dim: 3 },
+            { text: "Saya menyampaikan pendapat secara tegas dan santun dalam forum diskusi resmi.", dim: 7 },
+            { text: "Saya menyesuaikan cara kerja dengan cepat ketika prosedur instansi mengalami perubahan mendadak.", dim: 8 },
+            { text: "Saya memastikan laporan kerja disusun secara teliti dan bebas dari kesalahan kecil.", dim: 6 }
+        ]},
+        { id: 4, options: [
+            { text: "Saya mendahulukan kepentingan pelayanan masyarakat di atas kepentingan pribadi.", dim: 5 },
+            { text: "Saya menolak segala bentuk gratifikasi atau penawaran curang dalam bentuk apapun.", dim: 0 },
+            { text: "Saya menyelesaikan tanggung jawab harian tepat waktu meskipun merasa lelah.", dim: 2 },
+            { text: "Saya menjaga keharmonisan hubungan kerja dengan menghindari perdebatan tidak perlu.", dim: 4 }
+        ]},
+        { id: 5, options: [
+            { text: "Saya berani menyampaikan koreksi secara profesional kepada senior apabila prosedur kurang tepat.", dim: 7 },
+            { text: "Saya menerima perubahan jadwal tugas dadakan dengan sikap positif dan kepala dingin.", dim: 8 },
+            { text: "Saya mengecek ulang kelengkapan administrasi secara cermat sebelum arsip disimpan.", dim: 6 },
+            { text: "Saya memegang teguh komitmen kerja yang telah disepakati bersama tim.", dim: 2 }
+        ]},
+        { id: 6, options: [
+            { text: "Saya jujur melaporkan hambatan pekerjaan apa adanya tanpa menutup-nutupi kesalahan.", dim: 0 },
+            { text: "Saya hadir tepat waktu dan mematuhi seluruh tata tertib kedinasan yang berlaku.", dim: 1 },
+            { text: "Saya merespons kebutuhan masyarakat atau pemohon layanan dengan ramah dan sigap.", dim: 5 },
+            { text: "Saya mengontrol diri dengan baik ketika menghadapi rekan kerja yang menyebalkan.", dim: 3 }
+        ]},
+        { id: 7, options: [
+            { text: "Saya membangun komunikasi yang konstruktif untuk menyelesaikan perbedaan pendapat dalam tim.", dim: 4 },
+            { text: "Saya berani mengambil keputusan tegas dalam situasi mendesak sesuai kewenangan.", dim: 7 },
+            { text: "Saya mencari solusi alternatif ketika metode kerja lama tidak lagi efektif menghadapi perubahan.", dim: 8 },
+            { text: "Saya fokus menyelesaikan pekerjaan rutin secara tekun tanpa mengeluh.", dim: 2 }
+        ]},
+        { id: 8, options: [
+            { text: "Saya melakukan verifikasi data secara teliti untuk menghindari risiko kesalahan fatal.", dim: 6 },
+            { text: "Saya menempatkan kepentingan institusi di atas kepentingan golongan atau pribadi.", dim: 0 },
+            { text: "Saya mengikuti instruksi pimpinan dengan patuh dan penuh tanggung jawab.", dim: 1 },
+            { text: "Saya memberikan perhatian penuh kepada pihak yang membutuhkan bantuan pelayanan.", dim: 5 }
+        ]},
+        { id: 9, options: [
+            { text: "Saya menjaga stabilitas emosi dan pikiran jernih di bawah tekanan kerja yang tinggi.", dim: 3 },
+            { text: "Saya aktif berkolaborasi dan berbagi tugas secara adil dengan anggota kelompok.", dim: 4 },
+            { text: "Saya siap ditugaskan di unit manapun sesuai kebutuhan dan dinamika instansi.", dim: 8 },
+            { text: "Saya menyelesaikan setiap tugas dengan standar kualitas terbaik dan konsisten.", dim: 2 }
+        ]},
+        { id: 10, options: [
+            { text: "Saya berani menyuarakan kebenaran meskipun menghadapi tekanan dari lingkungan sekitar.", dim: 7 },
+            { text: "Saya menolak melanggar aturan meskipun diberikan iming-iming keuntungan pribadi.", dim: 0 },
+            { text: "Saya mencatat seluruh instruksi penting secara teratur agar tidak ada yang terlewat.", dim: 6 },
+            { text: "Saya melayani setiap tamu atau masyarakat dengan kesabaran tinggi dan empati.", dim: 5 }
+        ]},
+        { id: 11, options: [
+            { text: "Saya mematuhi batas waktu pengumpulan laporan yang telah ditetapkan pimpinan.", dim: 1 },
+            { text: "Saya mengendalikan diri agar tidak bersikap reaktif saat dikritik di depan umum.", dim: 3 },
+            { text: "Saya mendukung pencapaian tujuan bersama tim dengan mengesampingkan ego pribadi.", dim: 4 },
+            { text: "Saya beradaptasi dengan cepat terhadap penggunaan sistem kerja digital yang baru.", dim: 8 }
+        ]},
+        { id: 12, options: [
+            { text: "Saya bertanggung jawab penuh atas hasil kerja yang telah diamanahkan kepada saya.", dim: 2 },
+            { text: "Saya teliti memeriksa kesesuaian nominal dan data administratif sebelum disahkan.", dim: 6 },
+            { text: "Saya berbicara secara jujur mengenai progres pekerjaan apa adanya kepada pengawas.", dim: 0 },
+            { text: "Saya menunjukkan kepedulian nyata terhadap rekan kerja yang sedang mengalami kesulitan.", dim: 5 }
+        ]},
+        { id: 13, options: [
+            { text: "Saya menyampaikan gagasan perbaikan secara lugas dan terstruktur dalam rapat resmi.", dim: 7 },
+            { text: "Saya tetap tenang menghadapi situasi darurat tanpa panik berlebihan.", dim: 3 },
+            { text: "Saya menjaga kedisiplinan diri dalam bekerja tanpa harus terus-menerus diawasi.", dim: 1 },
+            { text: "Saya terbuka terhadap cara pandang baru yang berbeda dari kebiasaan lama.", dim: 8 }
+        ]},
+        { id: 14, options: [
+            { text: "Saya membangun kerja sama yang harmonis dengan berbagai karakter rekan kerja.", dim: 4 },
+            { text: "Saya bekerja secara tekun dan gigih menyelesaikan tugas meskipun menantang.", dim: 2 },
+            { text: "Saya memastikan standar etika dan kejujuran selalu terjaga dalam setiap tindakan.", dim: 0 },
+            { text: "Saya melayani masyarakat dengan prinsip keadilan tanpa membeda-bedakan latar belakang.", dim: 5 }
+        ]},
+        { id: 15, options: [
+            { text: "Saya melakukan pengecekan ulang berkas secara cermat untuk meminimalisir kesalahan administrasi.", dim: 6 },
+            { text: "Saya patuh pada aturan kedinasan meskipun tidak ada rekan lain yang melihat.", dim: 1 },
+            { text: "Saya berani mengambil tanggung jawab memimpin diskusi kelompok dalam menyelesaikan masalah.", dim: 7 },
+            { text: "Saya cepat menyesuaikan diri ketika terjadi pergeseran tanggung jawab tugas secara mendadak.", dim: 8 }
+        ]},
+        { id: 16, options: [
+            { text: "Saya mengelola emosi dengan baik ketika menghadapi keluhan masyarakat yang emosional.", dim: 3 },
+            { text: "Saya menyelesaikan tugas dengan penuh ketekunan hingga tuntas sempurna.", dim: 2 },
+            { text: "Saya menjunjung tinggi transparansi dan kejujuran dalam pengelolaan laporan keuangan.", dim: 0 },
+            { text: "Saya aktif membantu menyatukan perbedaan pendapat di antara anggota tim kerja.", dim: 4 }
+        ]},
+        { id: 17, options: [
+            { text: "Saya memberikan pelayanan prima dengan mengutamakan kepuasan dan kebutuhan publik.", dim: 5 },
+            { text: "Saya menegakkan aturan kedisiplinan secara konsisten kepada diri sendiri maupun lingkungan.", dim: 1 },
+            { text: "Saya teliti dalam mengidentifikasi detail kecil yang berpotensi menjadi masalah kerja.", dim: 6 },
+            { text: "Saya mengutarakan pendapat secara konstruktif demi kemajuan bersama instansi.", dim: 7 }
+        ]},
+        { id: 18, options: [
+            { text: "Saya fleksibel dan cepat menyesuaikan ritme kerja dengan standar operasional yang baru.", dim: 8 },
+            { text: "Saya bertanggung jawab menyelesaikan tugas hingga tuntas meskipun menghadapi kendala berat.", dim: 2 },
+            { text: "Saya menjaga integritas moral dengan tidak melakukan tindakan tercela dalam bentuk apapun.", dim: 0 },
+            { text: "Saya menjaga suasana kerja tetap kondusif melalui komunikasi antarpribadi yang baik.", dim: 4 }
+        ]},
+        { id: 19, options: [
+            { text: "Saya menahan diri untuk tidak menyebarkan informasi yang belum tentu kebenarannya.", dim: 3 },
+            { text: "Saya cermat dan teratur dalam mengarsipkan dokumen penting kantor.", dim: 6 },
+            { text: "Saya siap sedia membantu masyarakat yang memerlukan informasi pelayanan kedinasan.", dim: 5 },
+            { text: "Saya mematuhi hierarki dan instruksi kedinasan dengan penuh kesadaran.", dim: 1 }
+        ]},
+        { id: 20, options: [
+            { text: "Saya berani mengambil sikap tegas terhadap pelanggaran norma dan aturan institusi.", dim: 7 },
+            { text: "Saya menunjukkan ketekunan tinggi dalam menyelesaikan pekerjaan yang bersifat repetitif.", dim: 2 },
+            { text: "Saya mudah beradaptasi dengan rekan kerja baru dari berbagai latar belakang budaya.", dim: 8 },
+            { text: "Saya bersikap jujur mengakui batas kemampuan diri tanpa memalsukan data.", dim: 0 }
+        ]},
+        { id: 21, options: [
+            { text: "Saya mengutamakan kepentingan kelompok di atas kepentingan pribadi dalam situasi darurat.", dim: 4 },
+            { text: "Saya menjaga keteraturan meja kerja dan perangkat administrasi agar efisien.", dim: 6 },
+            { text: "Saya tetap tenang dan profesional saat menghadapi tekanan dari berbagai pihak sekaligus.", dim: 3 },
+            { text: "Saya memberikan pelayanan dengan senyum, salam, dan kepedulian yang tulus.", dim: 5 }
+        ]},
+        { id: 22, options: [
+            { text: "Saya taat asas dan patuh terhadap seluruh ketentuan hukum yang berlaku.", dim: 1 },
+            { text: "Saya bertanggung jawab penuh atas konsekuensi dari keputusan yang telah saya ambil.", dim: 2 },
+            { text: "Saya menyampaikan kritik atau saran konstruktif dengan cara yang santun dan beretika.", dim: 7 },
+            { text: "Saya cepat tanggap mempelajari instrumen atau teknologi baru untuk mendukung tugas.", dim: 8 }
+        ]},
+        { id: 23, options: [
+            { text: "Saya menjunjung tinggi kejujuran dalam setiap proses pelaporan kegiatan instansi.", dim: 0 },
+            { text: "Saya membangun kerja sama yang sinergis dengan instansi atau unit kerja lain.", dim: 4 },
+            { text: "Saya teliti meneliti setiap detail klausul dalam naskah dinas sebelum disetujui.", dim: 6 },
+            { text: "Saya mampu meredam kekesalan diri sendiri demi menjaga kelancaran pelayanan publik.", dim: 3 }
+        ]},
+        { id: 24, options: [
+            { text: "Saya berdedikasi tinggi dan tekun menyelesaikan setiap amanah pekerjaan hingga selesai.", dim: 2 },
+            { text: "Saya siap menghadapi ketidakpastian situasi tugas dengan mental yang tangguh dan adaptif.", dim: 8 },
+            { text: "Saya melayani masyarakat dengan penuh kerendahan hati dan kepedulian sosial.", dim: 5 },
+            { text: "Saya disiplin membagi waktu antara tugas kantor dan kewajiban pribadi.", dim: 1 }
+        ]},
+        { id: 25, options: [
+            { text: "Saya berani menyuarakan kebenaran meskipun tidak populer di kalangan rekan kerja.", dim: 7 },
+            { text: "Saya jujur mengakui apabila tidak sengaja merusak inventaris kantor dan bersedia mengganti.", dim: 0 },
+            { text: "Saya menjaga keakuratan data dalam setiap rekapitulasi laporan berkala.", dim: 6 },
+            { text: "Saya menciptakan suasana kerja yang suportif dan menyenangkan bagi rekan satu tim.", dim: 4 }
+        ]},
+        { id: 26, options: [
+            { text: "Saya mengendalikan diri agar tidak mudah tersinggung dengan nada bicara orang lain.", dim: 3 },
+            { text: "Saya menaati instruksi atasan secara konsisten tanpa ada unsur membangkang.", dim: 1 },
+            { text: "Saya bertanggung jawab penuh memperbaiki kesalahan kerja tanpa mencari-cari kambing hitam.", dim: 2 },
+            { text: "Saya cepat menyesuaikan diri saat dipindahkan ke bagian atau divisi tugas yang baru.", dim: 8 }
+        ]},
+        { id: 27, options: [
+            { text: "Saya memberikan perhatian khusus kepada masyarakat rentan yang memerlukan bantuan prioritas.", dim: 5 },
+            { text: "Saya bersikap transparan dan tidak menutupi informasi penting dari pengawas tim.", dim: 0 },
+            { text: "Saya teliti memeriksa keselarasan angka-angka dalam laporan pertanggungjawaban.", dim: 6 },
+            { text: "Saya menyampaikan argumen secara logis dan tegas dalam forum musyawarah kerja.", dim: 7 }
+        ]},
+        { id: 28, options: [
+            { text: "Saya mengutamakan kepentingan pencapaian target tim daripada kepentingan individu.", dim: 4 },
+            { text: "Saya tetap tenang dan sabar menghadapi birokrasi atau proses pelayanan yang panjang.", dim: 3 },
+            { text: "Saya bekerja dengan tekun dan konsisten meskipun pengawasan atasan sedang longgar.", dim: 2 },
+            { text: "Saya mematuhi seluruh protokol pengamanan dan tata tertib instansi secara disiplin.", dim: 1 }
+        ]},
+        { id: 29, options: [
+            { text: "Saya siap menghadapi perubahan struktur organisasi dan prosedur baru dengan antusias.", dim: 8 },
+            { text: "Saya menolak segala bentuk kecurangan dalam bentuk kolusi maupun nepotisme.", dim: 0 },
+            { text: "Saya menyusun jadwal kerja harian secara teratur dan sistematis agar tidak keteteran.", dim: 6 },
+            { text: "Saya sigap membantu rekan kerja yang kewalahan menyelesaikan beban tugasnya.", dim: 5 }
+        ]},
+        { id: 30, options: [
+            { text: "Saya berani menegur rekan kerja yang melanggar kode etik kedinasan secara persuasif.", dim: 7 },
+            { text: "Saya menjaga stabilitas emosi agar tetap rasional dalam situasi konflik kelompok.", dim: 3 },
+            { text: "Saya berkomitmen penuh menuntaskan tugas sulit hingga memberikan hasil optimal.", dim: 2 },
+            { text: "Saya berpartisipasi aktif dalam kegiatan gotong royong dan kerja bakti kantor.", dim: 4 }
+        ]},
+        { id: 31, options: [
+            { text: "Saya patuh terhadap batas jam kerja yang telah ditentukan oleh instansi.", dim: 1 },
+            { text: "Saya teliti dalam memeriksa keabsahan stempel, tanda tangan, dan nomor surat.", dim: 6 },
+            { text: "Saya bersikap jujur mengenai pemakaian fasilitas kantor sesuai peruntukannya.", dim: 0 },
+            { text: "Saya memberikan pelayanan dengan penuh keramahan tanpa memandang status sosial.", dim: 5 }
+        ]},
+        { id: 32, options: [
+            { text: "Saya fleksibel menerima metode kerja alternatif yang diusulkan oleh tim ahli.", dim: 8 },
+            { text: "Saya bertanggung jawab menjaga kerahasiaan dokumen penting kedinasan.", dim: 2 },
+            { text: "Saya mengontrol diri agar tidak meluapkan amarah saat rencana kerja mengalami kegagalan.", dim: 3 },
+            { text: "Saya menjalin komunikasi yang hangat dan kolaboratif dengan seluruh pegawai.", dim: 4 }
+        ]},
+        { id: 33, options: [
+            { text: "Saya menyampaikan gagasan inovatif secara tegas dan meyakinkan di depan forum.", dim: 7 },
+            { text: "Saya konsisten menegakkan aturan kedisiplinan kerja tanpa pandang bulu.", dim: 1 },
+            { text: "Saya memastikan setiap detail pekerjaan administrasi tersusun rapi dan mudah diakses.", dim: 6 },
+            { text: "Saya jujur melaporkan hasil evaluasi kegiatan apa adanya tanpa rekayasa data.", dim: 0 }
+        ]},
+        { id: 34, options: [
+            { text: "Saya sigap merespons permohonan bantuan pelayanan dari masyarakat dengan empati.", dim: 5 },
+            { text: "Saya menunjukkan ketekunan tinggi dalam mempelajari literatur petunjuk teknis baru.", dim: 2 },
+            { text: "Saya tetap tenang menghadapi situasi mendadak yang memicu kecemasan.", dim: 3 },
+            { text: "Saya cepat beradaptasi dengan penugasan lapangan yang menuntut mobilitas tinggi.", dim: 8 }
+        ]},
+        { id: 35, options: [
+            { text: "Saya aktif membangun kerja sama lintas unit demi efektivitas penyelesaian tugas.", dim: 4 },
+            { text: "Saya menolak segala bentuk suap sekecil apapun dalam pelayanan publik.", dim: 0 },
+            { text: "Saya patuh terhadap instruksi penugasan shift malam yang diberikan pimpinan.", dim: 1 },
+            { text: "Saya teliti memeriksa ulang hasil ketikan atau entri data sebelum disimpan.", dim: 6 }
+        ]},
+        { id: 36, options: [
+            { text: "Saya berani menyampaikan koreksi apabila ada kebijakan yang berisiko merugikan instansi.", dim: 7 },
+            { text: "Saya bertanggung jawab menyelesaikan tugas administratif hingga tuntas tepat waktu.", dim: 2 },
+            { text: "Saya mengendalikan diri dari sikap egois yang dapat merusak kekompakan tim.", dim: 3 },
+            { text: "Saya antusias mempelajari sistem kerja berbasis digital yang baru diberlakukan.", dim: 8 }
+        ]},
+        { id: 37, options: [
+            { text: "Saya memberikan pelayanan prima dengan mengedepankan prinsip kesopanan dan kesigapan.", dim: 5 },
+            { text: "Saya menjaga kedisiplinan kehadiran dalam setiap apel dan kegiatan formal instansi.", dim: 1 },
+            { text: "Saya cermat memperhatikan instruksi detail dari pimpinan agar tidak terjadi salah paham.", dim: 6 },
+            { text: "Saya menjunjung tinggi kejujuran dalam pencatatan jam kerja dan absensi.", dim: 0 }
+        ]},
+        { id: 38, options: [
+            { text: "Saya menjaga hubungan baik dan menghindari konflik personal dengan sesama rekan kerja.", dim: 4 },
+            { text: "Saya tetap tenang dan tidak mudah terprovokasi oleh isu negatif di lingkungan kerja.", dim: 3 },
+            { text: "Saya tekun mengerjakan tugas-tugas administratif yang membutuhkan kesabaran ekstra.", dim: 2 },
+            { text: "Saya siap menghadapi perubahan jam kerja atau penugasan mendadak secara fleksibel.", dim: 8 }
+        ]},
+        { id: 39, options: [
+            { text: "Saya berani mengambil keputusan tegas dalam situasi kritis sesuai batas kewenangan.", dim: 7 },
+            { text: "Saya patuh terhadap prosedur operasional baku demi keamanan dan keselamatan kerja.", dim: 1 },
+            { text: "Saya teliti mengkalkulasi rincian kebutuhan anggaran agar tidak terjadi selisih.", dim: 6 },
+            { text: "Saya jujur mengakui kesalahan prosedur dan langsung memperbaikinya sesuai ketentuan.", dim: 0 }
+        ]},
+        { id: 40, options: [
+            { text: "Saya mendahulukan kepentingan pelayanan masyarakat daripada kepentingan istirahat pribadi.", dim: 5 },
+            { text: "Saya bertanggung jawab penuh atas kualitas hasil kerja yang saya serahkan kepada atasan.", dim: 2 },
+            { text: "Saya mengelola emosi dengan baik saat menghadapi tekanan target waktu yang ketat.", dim: 3 },
+            { text: "Saya aktif berkolaborasi dan mendukung kesuksesan program kerja bersama tim.", dim: 4 }
+        ]},
+        { id: 41, options: [
+            { text: "Saya cepat beradaptasi dengan perubahan tata naskah dinas dan format pelaporan baru.", dim: 8 },
+            { text: "Saya konsisten mematuhi rambu-rambu kedisiplinan dan kode etik pegawai.", dim: 1 },
+            { text: "Saya teliti mencatat setiap mutasi barang inventaris kantor secara akurat.", dim: 6 },
+            { text: "Saya menyampaikan pendapat secara terbuka dan santun dalam forum evaluasi.", dim: 7 }
+        ]},
+        { id: 42, options: [
+            { text: "Saya menjunjung tinggi integritas moral dengan menolak segala bentuk gratifikasi ilegal.", dim: 0 },
+            { text: "Saya bekerja dengan tekun dan penuh semangat meskipun menghadapi rutinitas monoton.", dim: 2 },
+            { text: "Saya sabar dan empati dalam mendengarkan keluhan masyarakat yang datang berkonsultasi.", dim: 5 },
+            { text: "Saya menjaga ketenangan diri saat menghadapi situasi darurat di kantor.", dim: 3 }
+        ]},
+        { id: 43, options: [
+            { text: "Saya membangun sinergi positif dengan rekan kerja dari berbagai unit pelayanan.", dim: 4 },
+            { text: "Saya berani meluruskan informasi yang salah demi menjaga nama baik institusi.", dim: 7 },
+            { text: "Saya patuh terhadap arahan dan instruksi penugasan dari atasan langsung.", dim: 1 },
+            { text: "Saya fleksibel dalam menerima pembagian tugas baru yang diamanahkan instansi.", dim: 8 }
+        ]},
+        { id: 44, options: [
+            { text: "Saya teliti dalam memeriksa kelengkapan berkas permohonan layanan dari masyarakat.", dim: 6 },
+            { text: "Saya bertanggung jawab menyelesaikan seluruh target pekerjaan mingguan tepat waktu.", dim: 2 },
+            { text: "Saya jujur dalam menyampaikan hambatan operasional lapangan kepada pimpinan.", dim: 0 },
+            { text: "Saya mengendalikan diri agar tidak mudah marah ketika menghadapi provokasi.", dim: 3 }
+        ]},
+        { id: 45, options: [
+            { text: "Saya memberikan pelayanan sepenuh hati dengan mengutamakan kenyamanan publik.", dim: 5 },
+            { text: "Saya disiplin mengenakan atribut pakaian dinas lengkap sesuai ketentuan yang berlaku.", dim: 1 },
+            { text: "Saya aktif memberikan kontribusi pemikiran konstruktif dalam kerja kelompok.", dim: 4 },
+            { text: "Saya cepat menyesuaikan diri dengan lingkungan dan rekan kerja yang baru.", dim: 8 }
+        ]},
+        { id: 46, options: [
+            { text: "Saya berani mengambil tanggung jawab penuh atas kegagalan proyek yang dipimpinnya.", dim: 2 },
+            { text: "Saya teliti menjaga kerapian dan keakuratan arsip dokumen penting kedinasan.", dim: 6 },
+            { text: "Saya menyampaikan usulan perbaikan secara tegas dan beretika kepada pejabat berwenang.", dim: 7 },
+            { text: "Saya menjaga kejujuran dalam pengelolaan dan pelaporan dana operasional.", dim: 0 }
+        ]},
+        { id: 47, options: [
+            { text: "Saya tetap tenang dan rasional dalam menghadapi situasi krisis yang menegangkan.", dim: 3 },
+            { text: "Saya patuh terhadap prosedur keamanan dan protokol penjagaan ketat.", dim: 1 },
+            { text: "Saya sigap membantu masyarakat yang mengalami kesulitan di area pelayanan.", dim: 5 },
+            { text: "Saya terbuka terhadap kritik dan masukan demi perbaikan kinerja diri.", dim: 8 }
+        ]},
+        { id: 48, options: [
+            { text: "Saya membangun kerja sama yang erat dan saling percaya dengan sesama anggota tim.", dim: 4 },
+            { text: "Saya bertanggung jawab menuntaskan pekerjaan rumit dengan penuh ketekunan.", dim: 2 },
+            { text: "Saya teliti memeriksa validitas data sebelum diunggah ke portal resmi instansi.", dim: 6 },
+            { text: "Saya menolak berbuat curang meskipun memiliki kesempatan dan celah keamanan.", dim: 0 }
+        ]},
+        { id: 49, options: [
+            { text: "Saya berani menyuarakan kepentingan publik secara objektif dalam forum diskusi.", dim: 7 },
+            { text: "Saya mengendalikan emosi dengan baik saat menghadapi rekan kerja yang egois.", dim: 3 },
+            { text: "Saya disiplin mengikuti seluruh rangkaian jadwal kegiatan diklat tanpa terlambat.", dim: 1 },
+            { text: "Saya adaptif dan cepat menguasai instrumen kerja baru yang diperkenalkan instansi.", dim: 8 }
+        ]},
+        { id: 50, options: [
+            { text: "Saya memberikan pelayanan prima yang berorientasi pada kepuasan dan ketertiban masyarakat.", dim: 5 },
+            { text: "Saya jujur dalam melaporkan hasil pencapaian kerja apa adanya tanpa manipulasi.", dim: 0 },
+            { text: "Saya teliti mengecek seluruh kelengkapan alat kerja sebelum tugas dimulai.", dim: 6 },
+            { text: "Saya tekun dan gigih menghadapi tantangan tugas yang kompleks hingga tuntas.", dim: 2 }
+        ]}
+    ];
+
+    let currentIdx = 0;
+    let userAnswers = new Array(50).fill(null).map(() => ({ p: null, k: null }));
+    let userInfo = {};
+    let timeLeft = 1200; // 20 menit dalam detik
+    let timerInterval = null;
+    let testSubmitted = false;
+
+    function startTest() {
+        const name = document.getElementById('user-name').value.trim();
+        if (!name) {
+            alert("Harap masukkan nama lengkap peserta terlebih dahulu.");
+            return;
+        }
+
+        userInfo = { name };
+        document.getElementById('login-area').style.display = 'none';
+        document.getElementById('test-content').style.display = 'block';
+        initQuiz();
+        startTimer();
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                if (!testSubmitted) {
+                    alert("Waktu pengerjaan telah habis! Tes akan diselesaikan secara otomatis.");
+                    finishTest(true);
+                }
+                return;
+            }
+            timeLeft--;
+            let mins = Math.floor(timeLeft / 60);
+            let secs = timeLeft % 60;
+            document.getElementById('timer-display').innerText = `Waktu: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }, 1000);
+    }
+
+    function initQuiz() {
+        const wrapper = document.getElementById('question-wrapper');
+        const grid = document.getElementById('question-grid');
+        wrapper.innerHTML = "";
+        grid.innerHTML = "";
+
+        items.forEach((q, idx) => {
+            const card = document.createElement('div');
+            card.className = `question-box`;
+            card.id = `qbox-${idx}`;
+            card.style.display = idx === 0 ? 'block' : 'none';
+
+            let tableHTML = `
+                <h3 style="color:var(--primary); margin-top:0; font-size:1.1em;">Nomor Soal ${q.id} dari 50</h3>
+                <p style="font-size:0.95em; color:#555; margin-bottom:15px;">Pilih 1 pernyataan sebagai <strong>MOST (Paling)</strong> dan 1 pernyataan lain sebagai <strong>LEAST (Kurang)</strong>:</p>
+                <table class="forced-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 12%;">MOST (P)</th>
+                            <th style="width: 12%;">LEAST (K)</th>
+                            <th>Pernyataan Perilaku</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            q.options.forEach((opt, optIdx) => {
+                tableHTML += `
+                    <tr>
+                        <td><input type="radio" name="p_${idx}" class="radio-btn" onclick="selectAnswer(${idx}, 'p', ${optIdx})"></td>
+                        <td><input type="radio" name="k_${idx}" class="radio-btn" onclick="selectAnswer(${idx}, 'k', ${optIdx})"></td>
+                        <td class="statement">${opt.text}</td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `</tbody></table>`;
+            card.innerHTML = tableHTML;
+            wrapper.appendChild(card);
+
+            const gridItem = document.createElement('div');
+            gridItem.className = 'grid-item';
+            gridItem.id = `grid-${idx}`;
+            gridItem.innerText = q.id;
+            gridItem.onclick = () => jumpTo(idx);
+            grid.appendChild(gridItem);
+        });
+
+        updateNav();
+    }
+
+    function selectAnswer(qIdx, type, optIdx) {
+        if (testSubmitted) return;
+
+        if (type === 'p') {
+            if (userAnswers[qIdx].k === optIdx) {
+                alert("Pilihan MOST (P) dan LEAST (K) tidak boleh pada pernyataan yang sama!");
+                document.getElementsByName(`p_${qIdx}`)[optIdx].checked = false;
+                return;
+            }
+            userAnswers[qIdx].p = optIdx;
+        } else {
+            if (userAnswers[qIdx].p === optIdx) {
+                alert("Pilihan MOST (P) dan LEAST (K) tidak boleh pada pernyataan yang sama!");
+                document.getElementsByName(`k_${qIdx}`)[optIdx].checked = false;
+                return;
+            }
+            userAnswers[qIdx].k = optIdx;
+        }
+
+        if (userAnswers[qIdx].p !== null && userAnswers[qIdx].k !== null) {
+            document.getElementById(`grid-${qIdx}`).classList.add('filled');
+        }
+    }
+
+    function changeQuestion(step) {
+        if (currentIdx + step >= 50) {
+            confirmAndFinish();
+            return;
+        }
+        if (currentIdx + step < 0) return;
+
+        document.getElementById(`qbox-${currentIdx}`).style.display = 'none';
+        currentIdx += step;
+        document.getElementById(`qbox-${currentIdx}`).style.display = 'block';
+        updateNav();
+    }
+
+    function jumpTo(idx) {
+        document.getElementById(`qbox-${currentIdx}`).style.display = 'none';
+        currentIdx = idx;
+        document.getElementById(`qbox-${currentIdx}`).style.display = 'block';
+        updateNav();
+    }
+
+    function updateNav() {
+        document.getElementById('prevBtn').style.visibility = (currentIdx === 0) ? "hidden" : "visible";
+        document.getElementById('nextBtn').innerText = (currentIdx === 49) ? "SELESAI & HITUNG HASIL" : "BERIKUTNYA";
+        document.getElementById('progress-text').innerText = `Soal ${currentIdx + 1} / 50`;
+
+        document.querySelectorAll('.grid-item').forEach((item, idx) => {
+            item.classList.remove('current');
+            if (idx === currentIdx) item.classList.add('current');
+        });
+    }
+
+    function confirmAndFinish() {
+        const unfilled = userAnswers.filter(a => a.p === null || a.k === null).length;
+        if (unfilled > 0) {
+            let proceed = confirm(`Masih ada ${unfilled} nomor yang belum lengkap terisi. Apakah Anda tetap ingin mengakhiri dan memproses hasil?`);
+            if (!proceed) return;
+        } else {
+            let proceed = confirm("Apakah Anda yakin ingin menyelesaikan tes ini?");
+            if (!proceed) return;
+        }
+        finishTest(false);
+    }
+
+    function finishTest(isTimeOut) {
+        if (testSubmitted) return;
+        testSubmitted = true;
+        clearInterval(timerInterval);
+
+        document.getElementById('test-content').style.display = 'none';
+        document.getElementById('result-area').style.display = 'block';
+
+        calculateAndDisplayResults(isTimeOut);
+    }
+
+    function calculateAndDisplayResults(isTimeOut) {
+        // Hitung skor 9 dimensi (MOST = +1, LEAST = -1)
+        let dimScores = new Array(9).fill(0);
+        let dimCounts = new Array(9).fill(0);
+
+        items.forEach((q, idx) => {
+            q.options.forEach(opt => {
+                dimCounts[opt.dim]++;
+            });
+
+            const ans = userAnswers[idx];
+            if (ans.p !== null) {
+                const pDim = q.options[ans.p].dim;
+                dimScores[pDim] += 1;
+            }
+            if (ans.k !== null) {
+                const kDim = q.options[ans.k].dim;
+                dimScores[kDim] -= 1;
+            }
+        });
+
+        const answeredCount = userAnswers.filter(a => a.p !== null && a.k !== null).length;
+        const now = new Date();
+        const timeSpent = 1200 - timeLeft;
+        const minsSpent = Math.floor(timeSpent / 60);
+        const secsSpent = timeSpent % 60;
+
+        document.getElementById('res-participant').innerText = userInfo.name.toUpperCase();
+        document.getElementById('res-summary-details').innerHTML = `
+            • Tanggal & Waktu: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}<br>
+            • Durasi Pengerjaan: ${minsSpent} menit ${secsSpent} detik ${isTimeOut ? '(Waktu Habis)' : ''}<br>
+            • Nomor Terjawab Lengkap: ${answeredCount} dari 50 soal
+        `;
+
+        // Render Grafik Dimensi
+        renderDimensionChart(dimScores);
+
+        // Interpretasi Edukatif
+        let highestDimIdx = 0;
+        let maxScore = dimScores[0];
+        for (let i = 1; i < 9; i++) {
+            if (dimScores[i] > maxScore) {
+                maxScore = dimScores[i];
+                highestDimIdx = i;
+            }
+        }
+
+        document.getElementById('interpretation-box').innerHTML = `
+            <div class="info-card">
+                <h4>Uraian Edukatif & Refleksi Hasil</h4>
+                <p>Dalam sesi latihan ini, pilihan Anda relatif lebih sering menunjukkan kecenderungan menonjol pada dimensi <strong>"${dimensions[highestDimIdx]}"</strong> dibandingkan dimensi lainnya.</p>
+                <p>Temuan ini merupakan gambaran dari respons pada sesi latihan ini, bukan kesimpulan tetap mengenai kepribadian Anda. Gunakan hasil ini untuk mengevaluasi diri, mengenali pola pengambilan keputusan, serta memperkuat kesiapan mental dalam menghadapi berbagai situasi kedinasan.</p>
+            </div>
+            <div class="info-card">
+                <h4>Dimensi yang Memerlukan Eksplorasi Lebih Lanjut</h4>
+                <p>Perhatikan dimensi dengan skor terendah atau negatif sebagai area yang dapat Anda eksplorasi dan kembangkan melalui latihan mandiri secara konsisten.</p>
+            </div>
+        `;
+    }
+
+    function renderDimensionChart(scores) {
+        const ctx = document.getElementById('dimensionChart').getContext('2d');
+        const shortLabels = [
+            "1. Integritas",
+            "2. Disiplin",
+            "3. Tanggung Jawab",
+            "4. Regulasi Emosi",
+            "5. Kerja Sama",
+            "6. Orientasi Layanan",
+            "7. Ketelitian",
+            "8. Ketegasan",
+            "9. Adaptabilitas"
+        ];
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: shortLabels,
+                datasets: [{
+                    label: 'Skor Dimensi (Heuristik Latihan)',
+                    data: scores,
+                    backgroundColor: '#0A192F',
+                    borderColor: '#D4AF37',
+                    borderWidth: 1.5,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#E5E8E8' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAT SIMULASI & INVENTORI - SELEKSI KEDINASAN POLTEKIMIPAS</title>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --primary-light: #1e293b;
+            --accent: #800000;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --highlight: #e0f2fe;
+            --selected: #0284c7;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        body { margin: 0; background: var(--bg); color: var(--text); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--accent);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        header h1 { margin: 0; font-size: 1.6rem; font-weight: 800; letter-spacing: 0.5px; }
+        header p { margin: 8px 0 0; color: #cbd5e1; font-size: 0.95rem; font-weight: 600; }
+
+        .container { max-width: 900px; margin: 30px auto; padding: 0 15px; flex: 1; }
+
+        .disclaimer {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #92400e;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .menu-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-top: 6px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .menu-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+
+        .menu-card.accent-border { border-top-color: var(--accent); }
+
+        .menu-title { font-size: 1.15rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+        .menu-desc { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px; flex-grow: 1; }
+        
+        .badge-info {
+            display: inline-block;
+            background: #f1f5f9;
+            color: var(--text-muted);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            width: fit-content;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            display: block;
+        }
+
+        .btn:hover { background: var(--primary-light); }
+        .btn-accent { background: var(--accent); }
+        .btn-accent:hover { background: #600000; }
+
+        footer {
+            background: #1e293b;
+            color: #94a3b8;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.85rem;
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.3rem; }
+            .container { margin: 15px auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>PORTAL LATIHAN CAT KEDINASAN</h1>
+        <p>Persiapan Seleksi Poltekim & Poltekip (Poltekimipas) - PERSONA RESEARCH & CONSULTING</p>
+    </header>
+
+    <div class="container">
+        <div class="disclaimer">
+            <strong>PENTING:</strong> Portal dan materi latihan mandiri ini dikembangkan secara independen. Soal, instrumen penilaian, dan metode penskoran bukan merupakan kisi-kisi atau instrumen resmi dari pihak penyelenggara seleksi Poltekimipas.
+        </div>
+
+        <div class="menu-grid">
+            <!-- Modul 1: SJT & Kepribadian -->
+            <div class="menu-card">
+                <div>
+                    <div class="menu-title">Latihan SJT & Kepribadian</div>
+                    <span class="badge-info">50 Soal • 60 Menit</span>
+                    <div class="menu-desc">
+                        Simulasi Situational Judgment Test (SJT), dilema etika, skala prioritas, efektivitas respons, serta evaluasi kompetensi lengkap dengan grafik radar dan laporan PDF.
+                    </div>
+                </div>
+                <a href="sjt_1.html" class="btn">Mulai Modul SJT &raquo;</a>
+            </div>
+
+            <!-- Modul 2: Forced-Choice Personality -->
+            <div class="menu-card accent-border">
+                <div>
+                    <div class="menu-title">Forced-Choice Inventory</div>
+                    <span class="badge-info">50 Soal • 20 Menit</span>
+                    <div class="menu-desc">
+                        Inventori pilihan paksa (Most & Least) untuk memetakan sembilan dimensi kecenderungan perilaku, regulasi emosi, dan gaya pengambilan keputusan kedinasan.
+                    </div>
+                </div>
+                <a href="kp_1.html" class="btn btn-accent">Mulai Modul Forced-Choice &raquo;</a>
+            </div>
+
+            <!-- Modul 3: Inventori Perilaku -->
+            <div class="menu-card">
+                <div>
+                    <div class="menu-title">Inventori Perilaku (Likert)</div>
+                    <span class="badge-info">50 Butir • 15 Menit</span>
+                    <div class="menu-desc">
+                        Skala penilaian mandiri berbasis laporan diri (self-report) untuk mengevaluasi integritas, disiplin, ketekunan, serta orientasi pelayanan publik secara komprehensif.
+                    </div>
+                </div>
+                <a href="inventori_perilaku_1.html" class="btn">Mulai Modul Inventori &raquo;</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 PERSONA RESEARCH & CONSULTING • Hak Cipta Dilindungi
+    </footer>
+
+</body>
+</html>

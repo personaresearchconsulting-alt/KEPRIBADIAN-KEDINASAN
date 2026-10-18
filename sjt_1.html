@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CAT SELEKSI KEDINASAN Latihan SJT & Kepribadian - PERSONA RESEARCH & CONSULTING</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --primary-light: #1e293b;
+            --accent: #800000;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #15803d;
+            --warning: #b45309;
+            --danger: #b91c1c;
+            --highlight: #e0f2fe;
+            --selected: #0284c7;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        body { margin: 0; background: var(--bg); color: var(--text); -webkit-user-select: none; user-select: none; line-height: 1.5; }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 4px solid var(--accent);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+
+        .logo-title { font-weight: 800; font-size: 1.1rem; letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px; }
+        .timer-box { font-family: monospace; font-size: 1.3rem; font-weight: bold; background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); }
+        .timer-warning { background: var(--danger); animation: pulse 1s infinite; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
+        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+
+        .login-box {
+            max-width: 550px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border-top: 6px solid var(--primary);
+        }
+
+        .disclaimer {
+            background: #fffbeeb;
+            border: 1px solid #fde68a;
+            color: #92400e;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+
+        .q-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 6px solid var(--primary);
+        }
+
+        .q-meta { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .q-scenario { font-size: 1rem; color: #334155; margin-bottom: 15px; text-align: justify; background: #f1f5f9; padding: 15px; border-radius: 8px; border-left: 3px solid var(--text-muted); }
+        .q-text { font-size: 1.05rem; font-weight: 600; color: var(--primary); margin-bottom: 20px; }
+
+        .opt {
+            display: flex;
+            align-items: flex-start;
+            padding: 14px 18px;
+            margin: 10px 0;
+            background: #f8fafc;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .opt:hover { background: var(--highlight); border-color: #93c5fd; }
+        .opt.selected { background: var(--highlight); border-color: var(--selected); color: #0369a1; font-weight: 600; }
+        .opt-key { font-weight: bold; margin-right: 12px; background: #e2e8f0; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.85rem; flex-shrink: 0; }
+        .opt.selected .opt-key { background: var(--selected); color: white; }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .btn:hover { background: var(--primary-light); transform: translateY(-1px); }
+        .btn-secondary { background: #64748b; }
+        .btn-secondary:hover { background: #475569; }
+        .btn-accent { background: var(--accent); }
+        .btn-accent:hover { background: #600000; }
+
+        .nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 8px; margin-top: 20px; background: white; padding: 15px; border-radius: 8px; border: 1px solid var(--border); }
+        .nav-item { height: 38px; display: flex; align-items: center; justify-content: center; background: #f1f5f9; border-radius: 6px; font-size: 0.85rem; cursor: pointer; border: 1px solid var(--border); font-weight: bold; }
+        .nav-item.filled { background: var(--primary); color: white; border-color: var(--primary); }
+        .nav-item.active { outline: 3px solid var(--selected); }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; background: white; }
+        th, td { padding: 10px; border: 1px solid var(--border); text-align: left; vertical-align: top; }
+        th { background: #f1f5f9; color: var(--primary); font-weight: 700; }
+
+        .badge { padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; display: inline-block; }
+        .badge-score { background: #e0f2fe; color: #0369a1; }
+
+        .review-card { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 15px; }
+        .review-opt { padding: 8px 12px; margin: 4px 0; border-radius: 4px; font-size: 0.9rem; border: 1px solid transparent; }
+        .review-opt-best { background: #dcfce7; border-color: #86efac; color: #14532d; }
+        .review-opt-user { outline: 2px solid var(--selected); }
+
+        #chart-container { max-width: 550px; margin: 20px auto; }
+
+        @media (max-width: 600px) {
+            .container { padding: 0 10px; }
+            .q-card { padding: 15px; }
+            .btn { width: 100%; margin-bottom: 5px; }
+            .flex-mobile { flex-direction: column; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <!-- HALAMAN MASUK / AWAL -->
+    <div id="login-screen">
+        <div class="login-box">
+            <h2 style="color:var(--primary); margin-top:0; text-align:center;">CAT LATIHAN SJT & KEPRIBADIAN</h2>
+            <p style="text-align:center; color:var(--text-muted); font-weight:600; margin-top:-10px;">Persiapan Seleksi Poltekim & Poltekip (Poltekimipas)</p>
+            
+            <div class="disclaimer">
+                <strong>PENTING:</strong> Produk ini adalah MATERI LATIHAN MANDIRI yang dikembangkan secara independen. Soal, bobot, dan instrumen penilaian bukan merupakan kisi-kisi atau soal resmi dari pihak penyelenggara Poltekimipas.
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight:600; font-size:0.9rem;">Nama Lengkap Peserta:</label>
+                <input type="text" id="inName" placeholder="Masukkan nama Anda..." style="width:100%; padding:12px; margin-top:5px; border:2px solid var(--border); border-radius:6px; font-size:1rem;">
+            </div>
+
+            <div style="background:#f8fafc; padding:15px; border-radius:6px; font-size:0.85rem; margin-bottom:20px; border:1px solid var(--border);">
+                <strong>Ketentuan Simulasi:</strong>
+                <ul>
+                    <li>Jumlah Soal: <strong>50 Soal Advanced (SJT, Dilema Etika, Prioritas, Efektivitas)</strong></li>
+                    <li>Waktu Pengerjaan: <strong>60 Menit</strong></li>
+                    <li>Sistem Fitur: <strong>Auto-Next</strong> (Otomatis lanjut setelah memilih jawaban)</li>
+                    <li>Penskoran: <strong>Skala Kompetensi (0-4 & 1-5)</strong></li>
+                </ul>
+            </div>
+
+            <button class="btn" style="width:100%; padding:14px;" onclick="startTest()">MULAI SIMULASI TES</button>
+        </div>
+    </div>
+
+    <!-- HALAMAN UJIAN CAT -->
+    <div id="test-screen" style="display:none;">
+        <header>
+            <div class="logo-title">
+                <span>POLTEKIMIPAS CAT SIMULATION</span>
+            </div>
+            <div id="timer" class="timer-box">60:00</div>
+        </header>
+        
+        <div class="container">
+            <div class="q-card">
+                <div class="q-meta">
+                    <span id="q-cat">KATEGORI: -</span>
+                    <span id="q-num">SOAL 1/50</span>
+                </div>
+                <div id="q-scenario" class="q-scenario"></div>
+                <div id="q-text" class="q-text"></div>
+                <div id="options"></div>
+            </div>
+
+            <div style="display:flex; justify-content: space-between; gap:10px;" class="flex-mobile">
+                <button class="btn btn-secondary" onclick="nav(-1)">&laquo; Sebelum</button>
+                <button class="btn btn-accent" onclick="confirmFinish()">Selesaikan Tes &raquo;</button>
+                <button class="btn" onclick="nav(1)">Berikut &raquo;</button>
+            </div>
+
+            <div class="nav-grid" id="nav-grid"></div>
+        </div>
+    </div>
+
+    <!-- HALAMAN HASIL & EVALUASI -->
+    <div id="result-screen" style="display:none;" class="container">
+        <div id="pdf-content">
+            <div class="q-card" style="text-align:center; border-top: 8px solid var(--primary);">
+                <h2 style="margin:0; color:var(--primary)">LAPORAN HASIL EVALUASI LATIHAN</h2>
+                <p id="res-name" style="font-weight:bold; color:var(--text-muted); text-transform:uppercase; margin:5px 0; font-size:1.1rem;"></p>
+                <p id="res-date" style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;"></p>
+                <hr style="border:0; border-top:1px solid var(--border);">
+
+                <div style="display:flex; justify-content:center; gap:20px; margin:20px 0;" class="flex-mobile">
+                    <div style="background:#f1f5f9; padding:15px 25px; border-radius:8px;">
+                        <span style="font-size:0.8rem; font-weight:bold; color:var(--text-muted);">SKOR TOTAL ACCUMULATIVE</span>
+                        <h1 id="res-score" style="margin:0; color:var(--primary); font-size:2.5rem;">0</h1>
+                    </div>
+                    <div style="background:#f1f5f9; padding:15px 25px; border-radius:8px;">
+                        <span style="font-size:0.8rem; font-weight:bold; color:var(--text-muted);">PERSENTASE CAPAIAN</span>
+                        <h1 id="res-pct" style="margin:0; color:var(--accent); font-size:2.5rem;">0%</h1>
+                    </div>
+                </div>
+
+                <div id="chart-container"><canvas id="radarChart"></canvas></div>
+
+                <div id="res-summary" style="text-align:left; background:#f8fafc; padding:20px; border-radius:8px; border:1px solid var(--border); font-size:0.9rem; margin-top:20px;"></div>
+            </div>
+
+            <h3 style="border-left:5px solid var(--accent); padding-left:10px; color:var(--primary);">PEMBAHASAN SOAL & EVALUASI DETAIL</h3>
+            <div id="review-container"></div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin:30px 0;" class="flex-mobile">
+            <button class="btn btn-secondary" style="flex:1" onclick="location.reload()">Ulangi Tes Baru</button>
+            <button class="btn" style="flex:2" onclick="downloadPDF()">Unduh Laporan PDF</button>
+        </div>
+    </div>
+
+    <script>
+        // DATA BANK SOAL (50 SOAL ADVANCED INTEGRATED DATA)
+        const rawQuestions = [
+            // KATEGORI A: SJT (12 Soal)
+            {
+                id: 1, category: "A. Situational Judgment Test", competency: "Integritas",
+                scenario: "Anda bertugas di loket pendaftaran paspor. Seorang pemohon mengajukan berkas yang tidak lengkap. Rekan senior Anda mendatangi Anda dan meminta agar berkas pemohon tersebut tetap diproses dengan alasan pemohon adalah kerabat pejabat daerah setempat.",
+                question: "Apakah tindakan yang paling tepat dilakukan dalam situasi tersebut?",
+                options: [
+                    "Menolak secara tegas dan melaporkan tindakan senior tersebut langsung kepada Kepala Kantor saat itu juga.",
+                    "Menjelaskan secara sopan kepada pemohon dan senior mengenai persyaratan yang belum lengkap, serta menawarkan bantuan panduan melengkapinya.",
+                    "Menerima berkas tersebut demi menghormati senior, namun menunda prosesnya hingga persyaratan dilangkapi.",
+                    "Meminta senior tersebut untuk menandatangani surat pertanggungjawaban pribadi sebelum memproses berkas.",
+                    "Menyerahkan penanganan berkas tersebut sepenuhnya kepada senior agar Anda tidak terlibat konflik."
+                ],
+                scores: [2, 4, 1, 1, 0],
+                correct: 1,
+                explanation: "Tindakan paling proporsional adalah mempertahankan aturan baku secara tegas namun tetap sopan, menyampaikan kekurangan persyaratan secara komunikatif tanpa melanggar SOP."
+            },
+            {
+                id: 2, category: "A. Situational Judgment Test", competency: "Kerja sama dan penyelesaian konflik",
+                scenario: "Dalam penyusunan laporan kelompok tugas akhir kedinasan, salah satu anggota tidak berkontribusi karena merasa pembagian tugas tidak adil. Batas waktu penyerahan laporan tinggal dua hari lagi.",
+                question: "Apakah tindakan yang paling tepat dilakukan dalam situasi tersebut?",
+                options: [
+                    "Melaporkan anggota tersebut kepada instruktur agar mendapat pengurangan nilai disiplin.",
+                    "Mengerjakan bagian tugas anggota tersebut bersama anggota lain agar laporan selesai tepat waktu.",
+                    "Mengajak anggota tersebut berdiskusi untuk memahami kendalanya, meredistribusi tugas secara adil, dan menyepakati target penyelesaian bersama.",
+                    "Mengeluarkan nama anggota tersebut dari lembar pengesahan kelompok laporan.",
+                    "Menunggu hingga anggota tersebut menyadari kewajibannya tanpa mengambil tindakan apa pun."
+                ],
+                scores: [1, 2, 4, 0, 0],
+                correct: 2,
+                explanation: "Langkah terbaik adalah dialog konstruktif, mengevaluasi kembali pembagian tugas untuk mencapai kesepakatan tanpa mengabaikan batas waktu."
+            },
+            {
+                id: 3, category: "A. Situational Judgment Test", competency: "Pengendalian diri",
+                scenario: "Saat melakukan simulasi pengawasan warga binaan, Anda ditegur dengan keras oleh instruktur di depan seluruh peserta pelatihan atas kesalahan kecil dalam administrasi catatan harian.",
+                question: "Apakah tindakan yang paling tepat dilakukan dalam situasi tersebut?",
+                options: [
+                    "Menerima teguran dengan tenang, mengakui kesalahan, dan segera memperbaiki catatan sesuai petunjuk.",
+                    "Membela diri dengan menjelaskan bahwa kesalahan tersebut terjadi akibat instruksi awal yang kurang jelas.",
+                    "Menunjukkan sikap diam namun mengajukan keberatan secara tertulis setelah sesi pelatihan selesai.",
+                    "Meminta maaf lalu meminta arahan rekan lain agar tidak perlu berkonsultasi lagi dengan instruktur.",
+                    "Mengabaikan teguran tersebut karena menganggap instruktur hanya ingin menguji ketahanan mental."
+                ],
+                scores: [4, 1, 2, 1, 0],
+                correct: 0,
+                explanation: "Menunjukkan pengendalian diri yang mantap, menerima umpan balik profesional dengan lapang dada, dan berfokus pada perbaikan."
+            },
+            {
+                id: 4, category: "A. Situational Judgment Test", competency: "Penentuan prioritas",
+                scenario: "Anda dihadapkan pada dua tugas mendesak: menyusun data statistik verifikasi berkas yang diminta kementerian esok pagi, dan melayani antrean pemohon informasi publik yang menumpuk di area loket.",
+                question: "Apakah tindakan yang paling tepat dilakukan dalam situasi tersebut?",
+                options: [
+                    "Fokus melayani antrean pemohon di loket hingga selesai, baru mengerjakan laporan statistik hingga malam hari.",
+                    "Mengerjakan data statistik terlebih dahulu dan menutup sementara loket pelayanan.",
+                    "Melaporkan kondisi tersebut kepada atasan untuk memohon penambahan personel atau pembagian penugasan.",
+                    "Meminta bantuan rekan kerja untuk memegang loket sementara Anda menyelesaikan data statistik, atau sebaliknya sesuai arahan supervisor.",
+                    "Mengerjakan kedua tugas secara bersamaan selang-seling agar keduanya tetap berjalan."
+                ],
+                scores: [2, 0, 3, 4, 1],
+                correct: 3,
+                explanation: "Koordinasi dan efisiensi tim dalam penyelesaian tugas ganda (multi-tasking) dengan pembagian peran terstruktur adalah respons paling efektif."
+            },
+            {
+                id: 5, category: "A. Situational Judgment Test", competency: "Kepatuhan dan disiplin",
+                scenario: "Seorang senior meminta Anda memberikan salinan data internal kunjungan warga binaan untuk kepentingan penelitian pribadinya tanpa melampirkan surat izin resmi dari unit kerja.",
+                question: "Apakah tindakan yang paling tepat dilakukan dalam situasi tersebut?",
+                options: [
+                    "Memberikan data tersebut karena senior berjanji akan menjaga kerahasiannya.",
+                    "Menolak memberikan data secara sopan dan menjelaskan keharusan adanya prosedur surat izin resmi.",
+                    "Memberikan sebagian data yang dianggap tidak sensitif untuk menjaga hubungan baik.",
+                    "Melaporkan senior tersebut atas tuduhan pelanggaran rahasia jabatan.",
+                    "Meminta senior mengajukan permohonan tertulis langsung kepada Kepala Satuan Kerja."
+                ],
+                scores: [0, 4, 1, 2, 3],
+                correct: 1,
+                explanation: "Menjaga integritas data internal dengan mematuhi Prosedur Operasional Standar (SOP) pendelegasian informasi."
+            },
+            {
+                id: 6, category: "A. Situational Judgment Test", competency: "Pelayanan publik",
+                scenario: "Seorang warga lansia kesulitan mengisi formulir permohonan paspor berbasis elektronik di terminal mandiri, sementara antrean di belakangnya mulai tidak sabar.",
+                question: "Apakah tindakan yang paling tepat dilakukan dalam situasi tersebut?",
+                options: [
+                    "Meminta warga lansia tersebut mengantre kembali dari awal setelah dipandu oleh keluarganya.",
+                    "Mengambil alih perangkat dan mengisikan seluruh data warga lansia tersebut tanpa verifikasi ulang.",
+                    "Mendampingi warga lansia tersebut dengan ramah, membantunya langkah demi langkah secara cepat tanpa mengganggu kelancaran antrean.",
+                    "Meminta antrean di belakangnya untuk bersabar tanpa memberikan bantuan khusus kepada warga lansia.",
+                    "Mengarahkan warga lansia tersebut ke petugas khusus/loket prioritas apabila tersedia."
+                ],
+                scores: [0, 2, 3, 1, 4],
+                correct: 4,
+                explanation: "Memanfaatkan mekanisme loket prioritas adalah solusi paling proporsional untuk menjaga kepuasan pelanggan dan kelancaran sistem."
+            },
+            {
+                id: 7, category: "A. Situational Judgment Test", competency: "Ketegasan profesional",
+                scenario: "Dalam penugasan pos pengawasan pintu utama, seorang tamu mengaku sebagai pejabat kementerian dan menolak menyerahkan kartu identitas untuk dicatat sesuai SOP.",
+                question: "Apakah tindakan yang paling tepat dilakukan dalam situasi tersebut?",
+                options: [
+                    "Mengarahkan tamu tersebut langsung masuk karena takut memicu masalah panjang.",
+                    "Tetap mewajibkan pemeriksaan identitas secara sopan, tegas, dan sesuai SOP pengamanan tanpa membeda-bedakan.",
+                    "Meminta izin ke atasan terlebih dahulu sebelum mengizinkan tamu tersebut lewat.",
+                    "Menolak tamu tersebut masuk dan mengusirnya dari area pemeriksaan.",
+                    "Mencatat nama yang disebutkan tamu tanpa memverifikasi dokumen fisiknya."
+                ],
+                scores: [0, 4, 3, 1, 1],
+                correct: 1,
+                explanation: "SOP Pengamanan wajib dijalankan secara egaliter dan tegas dengan mengedepankan etika profesionalisme."
+            },
+            {
+                id: 8, category: "A. Situational Judgment Test", competency: "Adaptabilitas dan orientasi tugas",
+                scenario: "Sistem aplikasi layanan imigrasi mengalami *down* mendadak saat antrean pemohon sedang berada pada puncak kepadatan harian.",
+                question: "Apakah tindakan yang paling tepat dilakukan dalam situasi tersebut?",
+                options: [
+                    "Menghentikan seluruh layanan hingga sistem kembali normal.",
+                    "Mengumumkan situasi kendala teknis secara transparan, menyampaikan estimasi waktu, dan mengalihkan ke prosedur pelayanan manual cadangan sesuai panduan.",
+                    "Meminta masyarakat pulang dan kembali esok hari.",
+                    "Fokus menyalahkan tim IT dan menunggu perbaikan tanpa memberikan kepastian kepada publik.",
+                    "Menerima dokumen fisik secara sembarangan tanpa mencatat urutan antrean."
+                ],
+                scores: [1, 4, 0, 0, 1],
+                correct: 1,
+                explanation: "Kemampuan manajemen krisis dengan komunikasi publik yang jelas serta penggunaan contingency plan (rencana darurat)."
+            },
+            {
+                id: 9, category: "A. Situational Judgment Test", competency: "Tanggung jawab",
+                scenario: "Anda tidak sengaja menghilangkan dokumen salinan pengajuan remisi warga binaan saat memindahkannya ke lemari arsip.",
+                question: "Apakah tindakan yang paling tepat dilakukan dalam situasi mejelaskan kejadian tersebut?",
+                options: [
+                    "Mencari dokumen tersebut secara mandiri dan jika tidak ditemukan, segera melaporkan kepada atasan untuk mencetak salinan baru resmi sesuai berkas induk.",
+                    "Diam saja dan berharap tidak ada yang menanyakan keberadaan dokumen tersebut.",
+                    "Mensejajarkan persetujuan berkas lain untuk menyembunyikan berkas yang hilang.",
+                    "Menuduh rekan piket sebelumnya sebagai pihak yang lalai menyusun arsip.",
+                    "Membuat dokumen tiruan tanpa verifikasi dari sistem utama."
+                ],
+                scores: [4, 0, 0, 0, 1],
+                correct: 0,
+                explanation: "Tanggung jawab atas kesalahan diri sendiri, transparan, dan berfokus pada mitigasi dampak."
+            },
+            {
+                id: 10, category: "A. Situational Judgment Test", competency: "Ketelitian administrasi",
+                scenario: "Saat melakukan verifikasi data paspor, terdapat perbedaan tanggal lahir antara ijazah dan akta kelahiran calon pemohon.",
+                question: "Apakah tindakan yang paling tepat dilakukan dalam situasi tersebut?",
+                options: [
+                    "Langsung menolak permohonan paspor pemohon tersebut secara permanen.",
+                    "Mengubah tanggal lahir di sistem agar cocok dengan salah satu dokumen yang dirasa benar.",
+                    "Mengonfirmasi perbedaan data kepada pemohon dan meminta dokumen pendukung resmi penetapan pengadilan/surat keterangan instansi berwenang.",
+                    "Meneruskan proses dan membiarkan petugas cetak yang memutuskan.",
+                    "Menyarankan pemohon untuk membuat akta kelahiran baru yang tidak resmi."
+                ],
+                scores: [1, 0, 4, 1, 0],
+                correct: 2,
+                explanation: "Memastikan akurasi data hukum administrasi sesuai regulasi tanpa tindakan destruktif sepihak."
+            },
+            {
+                id: 11, category: "A. Situational Judgment Test", competency: "Objektivitas dan keadilan",
+                scenario: "Anda menjadi juri dalam seleksi taruna berprestasi di tingkat akademi. Salah satu peserta yang dinilai adalah adik tingkat yang sangat dekat dengan Anda.",
+                question: "Apakah tindakan yang paling tepat dilakukan dalam situasi tersebut?",
+                options: [
+                    "Memberikan nilai tertinggi agar adik tingkat tersebut dapat terangkat namanya.",
+                    "Melaporkan potensi konflik kepentingan kepada ketua panitia dan meminta untuk mengganti juri pada penilaian peserta tersebut.",
+                    "Memberikan nilai paling rendah untuk membuktikan bahwa Anda tidak bersikap pilih kasih.",
+                    "Pura-pura tidak mengenalnya dan memberikan penilaian sesuka hati.",
+                    "Mengundurkan diri dari seluruh kepanitiaan juri."
+                ],
+                scores: [0, 4, 1, 1, 2],
+                correct: 1,
+                explanation: "Transparansi konflik kepentingan (*conflict of interest*) menjaga objektivitas dan kredibilitas instansi."
+            },
+            {
+                id: 12, category: "A. Situational Judgment Test", competency: "Integritas",
+                scenario: "Saat mengawasi kegiatan pembinaan warga binaan, Anda melihat seorang rekan mengutip imbalan uang tunai dari keluarga pengunjung agar diberikan durasi besuk tambahan.",
+                question: "Apakah tindakan yang paling tepat dilakukan dalam situasi tersebut?",
+                options: [
+                    "Membiarkan tindakan tersebut karena sudah menjadi kebiasaan lama.",
+                    "Menegur rekan tersebut secara pribadi, mengingatkan bahaya pungli, dan jika diabaikan, melaporkan secara resmi melalui mekanisme internal whistleblowing.",
+                    "Meminta bagian dari uang tersebut sebagai kompensasi menjaga kerahasiaan.",
+                    "Meneriaki rekan tersebut di depan keluarga pengunjung.",
+                    "Langsung menyebarkan kejadian tersebut di media sosial."
+                ],
+                scores: [0, 4, 0, 1, 0],
+                correct: 1,
+                explanation: "Eskalasi bertahap: ingatkan secara kolegial lalu lakukan tindakan pelaporan internal berjenjang."
+            },
+
+            // KATEGORI B: Dilema Etika dan Integritas (10 Soal)
+            {
+                id: 13, category: "B. Dilema Etika dan Integritas", competency: "Integritas",
+                scenario: "Sahabat terbaik Anda sesama taruna tidak sengaja merusakan alat inventaris laboratorium simulasi imigrasi dan meminta Anda untuk mengaku bahwa perusakan terjadi akibat gangguan teknis alat.",
+                question: "Apakah tindakan yang paling tepat dilakukan?",
+                options: [
+                    "Menolak permintaan tersebut dan menyarankan sahabat untuk bersikap jujur melaporkan kejadian sebenarnya kepada pembina.",
+                    "Menuruti permintaan sahabat demi menjaga tali persahabatan.",
+                    "Melaporkan rahasia tersebut secara diam-diam kepada instruktur tanpa memberitahu sahabat Anda terlebih dahulu.",
+                    "Pura-pura tidak tahu mengenai kerusakan alat tersebut.",
+                    "Mengaku bahwa Anda yang merusakkannya agar sahabat tidak dihukum."
+                ],
+                scores: [4, 0, 2, 1, 0],
+                correct: 0,
+                explanation: "Integritas mengandalkan kejujuran moral di atas simpati personal, seraya mendorong rekan untuk bertanggung jawab."
+            },
+            {
+                id: 14, category: "B. Dilema Etika dan Integritas", competency: "Integritas",
+                scenario: "Seorang vendor pengadaan seragam dinas memberikan cenderamata berharga mahal kepada Anda sebagai bentuk ungkapan terima kasih atas kelancaran administrasi pendaftaran.",
+                question: "Apakah tindakan yang paling tepat dilakukan?",
+                options: [
+                    "Menerima cenderamata tersebut karena diberikan setelah seluruh proses selesai.",
+                    "Menolak secara halus hadiah tersebut dan menjelaskan aturan larangan gratifikasi dalam pelayanan publik.",
+                    "Menerima hadiah tersebut lalu membagikannya kepada seluruh staf loket.",
+                    "Menerima hadiah tersebut namun melaporkannya ke Unit Pengendalian Gratifikasi (UPG) instansi.",
+                    "Menyimpan hadiah tersebut di kantor sebagai inventaris bersama."
+                ],
+                scores: [0, 4, 1, 3, 2],
+                correct: 1,
+                explanation: "Menolak langsung gratifikasi adalah komitmen utama pencegahan benturan kepentingan. Melaporkan ke UPG jika tak bisa ditolak langsung adalah opsi sekunder."
+            },
+            {
+                id: 15, category: "B. Dilema Etika dan Integritas", competency: "Integritas",
+                scenario: "Anda menemukan celah keamanan dalam aplikasi data intelijen imigrasi yang memungkinkan pengubahan data status cegah-tangkal tanpa jejak log audit.",
+                question: "Apakah tindakan yang paling tepat dilakukan?",
+                options: [
+                    "Memanfaatkan celah tersebut untuk menguji keandalan sistem lebih lanjut.",
+                    "Mendokumentasikan temuan secara teknis dan melaporkannya segera kepada pengelola IT/Siber resmi agar diperbaiki.",
+                    "Menceritakan celah tersebut kepada rekan kerja sebagai bahan diskusi ringan.",
+                    "Membiarkannya hingga ada perintah audit resmi dari pimpinan.",
+                    "Mengunggah celah keselamatan tersebut ke media sosial agar mendapat perhatian cepat."
+                ],
+                scores: [0, 4, 1, 1, 0],
+                correct: 1,
+                explanation: "Pengamanan aset data negara melalui pelaporan resmi yang terukur (*responsible disclosure*)."
+            },
+            {
+                id: 16, category: "B. Dilema Etika dan Integritas", competency: "Tanggung jawab",
+                scenario: "Atasan memberikan perintah lisan yang secara jelas melanggar ketentuan pedoman tata tertib keuangan pengadaan alat pengamanan pemasyarakatan.",
+                question: "Apakah tindakan yang paling tepat dilakukan?",
+                options: [
+                    "Melaksanakan perintah tersebut tanpa ragu karena merupakan instruksi atasan.",
+                    "Menolak halus dengan menunjukkan aturan tertulis, serta meminta perintah tersebut disampaikan dalam bentuk tertulis jika tetap dilanjutkan.",
+                    "Melaksanakan perintah tersebut tetapi membuat catatan rahasia untuk melindungi diri sendiri.",
+                    "Langsung mengabaikan perintah tersebut dan mengundurkan diri dari panitia.",
+                    "Melaporkan atasan tersebut ke pimpinan tertinggi tanpa konfirmasi terlebih dahulu."
+                ],
+                scores: [0, 4, 2, 1, 2],
+                correct: 1,
+                explanation: "Menguji akuntabilitas perintah lisan melalui konfirmasi regulasi tertulis."
+            },
+            {
+                id: 17, category: "B. Dilema Etika dan Integritas", competency: "Kepatuhan dan disiplin",
+                scenario: "Anda mengetahui bahwa beberapa rekan kerja memalsukan stempel presensi kehadiran fisik dengan cara menyuruh anggota piket menandatanganinya.",
+                question: "Apakah tindakan yang paling tepat dilakukan?",
+                options: [
+                    "Ikut melakukan hal serupa agar diterima dalam lingkungan pergaulan.",
+                    "Tidak ikut serta dan mengingatkan rekan-rekan mengenai pilar disiplin aparatur.",
+                    "Melaporkan langsung seluruh nama rekan tersebut ke bagian kepegawaian secara anonim.",
+                    "Membiarkan hal tersebut karena tidak merugikan keuangan Anda.",
+                    "Menegur anggota piket agar menolak menitip tanda tangan."
+                ],
+                scores: [0, 4, 2, 1, 3],
+                correct: 1,
+                explanation: "Disiplin pribadi diutamakan, diselingi tindakan proaktif menegur ekosistem kerja agar kembali taat asas."
+            },
+            {
+                id: 18, category: "B. Dilema Etika dan Integritas", competency: "Ketelitian dan kerahasiaan informasi",
+                scenario: "Media massa meminta konfirmasi atas rumor kaburnya seorang warga binaan berprofil tinggi sebelum adanya rilis resmi dari Humas instansi.",
+                question: "Apakah tindakan yang paling tepat dilakukan?",
+                options: [
+                    "Memberikan informasi faktual yang Anda ketahui demi transparansi publik.",
+                    "Menjelaskan secara sopan bahwa wewenang pendelegasian informasi berada di bagian Humas/Pimpinan dan mengarahkan wartawan ke pintu resmi.",
+                    "Membuat konfirmasi palsu untuk menenangkan situasi media.",
+                    "Menolak berbicara dan menghindari wartawan tanpa memberikan penjelasan.",
+                    "Mengabaikan pertanyaan wartawan dan mematikan saluran komunikasi."
+                ],
+                scores: [1, 4, 0, 2, 0],
+                correct: 1,
+                explanation: "Menjaga batas kewenangan (*span of control*) dalam protokol komunikasi krisis."
+            },
+            {
+                id: 19, category: "B. Dilema Etika dan Integritas", competency: "Integritas",
+                scenario: "Anda ditawari beasiswa pendidikan dinas ke luar negeri, tetapi syarat administrasi mewajibkan rekomendasi yang menyebutkan Anda aktif dalam organisasi tertentu yang sebenarnya tidak pernah Anda ikuti.",
+                question: "Apakah tindakan yang paling tepat dilakukan?",
+                options: [
+                    "Meminta pengurus organisasi melengkapi surat keterangan aktif belakangan.",
+                    "Menolak membuat data organisasi tidak jujur dan memilih mendaftar melalui jalur kualifikasi murni yang sesuai riwayat nyata.",
+                    "Memalsukan tanda tangan pimpinan organisasi demi masa depan karier.",
+                    "Membuat organisasi fiktif untuk memenuhi berkas.",
+                    "Membayar imbalan kepada pengurus organisasi agar menerbitkan surat validasi."
+                ],
+                scores: [1, 4, 0, 0, 0],
+                correct: 1,
+                explanation: "Prinsip integritas diri memajukan karier lewat transparansi rekam jejak yang sahih."
+            },
+            {
+                id: 20, category: "B. Dilema Etika dan Integritas", competency: "Integritas",
+                scenario: "Dalam pemeriksaan fisik kendaraan operasional, Anda menemukan selisih pemakaian BBM dinas yang sengaja diperbesar oleh pengemudi senior.",
+                question: "Apakah tindakan yang paling tepat dilakukan?",
+                options: [
+                    "Menutupi laporan selisih tersebut demi rasa hormat kepada senior.",
+                    "Mencatat data aktual faktual dan mengonfirmasikannya dalam rekapitulasi audit internal.",
+                    "Meminta pengemudi mengganti uang selisih tersebut tanpa melaporkannya.",
+                    "Meningkatkan angka pemakaian diri sendiri agar seimbang.",
+                    "Membiarkan selisih tersebut selama jumlahnya tidak begitu besar."
+                ],
+                scores: [0, 4, 2, 0, 1],
+                correct: 1,
+                explanation: "Ketelitian laporan akuntansi keuangan publik menuntut kejujuran angka faktual."
+            },
+            {
+                id: 21, category: "B. Dilema Etika dan Integritas", competency: "Objektivitas dan keadilan",
+                scenario: "Seorang warga binaan yang sering berbuat ulah tiba-tiba mengajukan hak asimilasi. Secara dokumen, ia telah memenuhi seluruh kualifikasi administratif.",
+                question: "Apakah tindakan yang paling tepat dilakukan?",
+                options: [
+                    "Menolak pengajuan asimilasi karena menganggap perilakunya belum sepenuhnya berubah.",
+                    "Memproses pengajuan sesuai ketentuan regulasi objektif, seraya melampirkan catatan rekam jejak perilaku sebagai pertimbangan sidang TPP.",
+                    "Menahan berkasnya sampai batas waktu habis.",
+                    "Meminta warga binaan membayar denda administratif tambahan.",
+                    "Menyetujui secara langsung tanpa melalui mekanisme sidang tim pengamat."
+                ],
+                scores: [1, 4, 0, 0, 2],
+                correct: 1,
+                explanation: "Keadilan administratif menggabungkan pemenuhan syarat regulasi dan transparansi rekam evaluasi perilaku."
+            },
+            {
+                id: 22, category: "B. Dilema Etika dan Integritas", competency: "Integritas",
+                scenario: "Anda mengetahui adanya kesalahan ketik pada keputusan kenaikan pangkat Anda yang menghasilkan pembayaran gaji pokok lebih tinggi dari skema seharusnya.",
+                question: "Apakah tindakan yang paling tepat dilakukan?",
+                options: [
+                    "Menikmati kelebihan tersebut sebagai rezeki tambahan.",
+                    "Segera melaporkan kekeliruan data nominal kepada bagian Keuangan/Gaji untuk dilakukan perbaikan penetapan.",
+                    "Menunggu hingga pihak keuangan menyadari sendiri kesalahan tersebut.",
+                    "Menyisihkan kelebihan tersebut untuk kegiatan amal tanpa melaporkannya.",
+                    "Mengklaim bahwa kekeliruan tersebut adalah hak akibat prestasi."
+                ],
+                scores: [0, 4, 2, 1, 0],
+                correct: 1,
+                explanation: "Kejujuran finansial atas hak gaji merupakan wujud integritas moral ASN."
+            },
+
+            // KATEGORI C: Penentuan Prioritas dan Pengambilan Keputusan (8 Soal)
+            {
+                id: 23, category: "C. Penentuan Prioritas", competency: "Pengambilan keputusan dan prioritas",
+                scenario: "Pada jam pelayanan sibuk, terjadi kegagalan listrik cadangan (genset), alarm kebakaran berbunyi singkat di ruang arsip, dan terdapat warga yang pingsan di antrean.",
+                question: "Manakah urutan prioritas tindakan yang paling rasional?",
+                options: [
+                    "Mematikan alarm -> Menyelamatkan berkas arsip -> Membawa warga pingsan.",
+                    "Memastikan keselamatan warga yang pingsan & mengecek potensi bahaya kebakaran secara paralel -> Mengamankan area antrean -> Penanganan teknis genset.",
+                    "Memperbaiki genset terlebih dahulu agar listrik pelayanan kembali menyala.",
+                    "Meminta seluruh pemohon evakuasi ke luar gedung tanpa memedulikan hal lain.",
+                    "Menghubungi pemadam kebakaran terlebih dahulu sebelum mengecek kondisi."
+                ],
+                scores: [1, 4, 2, 2, 1],
+                correct: 1,
+                explanation: "Prioritas keselamatan jiwa manusia (*life safety*) adalah puncak hierarki manajemen krisis."
+            },
+            {
+                id: 24, category: "C. Penentuan Prioritas", competency: "Pengambilan keputusan dan prioritas",
+                scenario: "Tiga instruksi masuk bersamaan dari pimpinan: 1) Menyiapkan bahan presentasi Kakanwil esok pagi, 2) Menangani pemohon warga negara asing yang izin tinggalnya habis hari ini, 3) Menghadiri rapat rutin internal unit.",
+                question: "Apakah prioritas keputusan yang paling tepat?",
+                options: [
+                    "Menangani WNA yang izin tinggalnya habis -> Menyusun bahan presentasi -> Meminta izin terlambat/mewakilkan rapat rutin.",
+                    "Menghadiri rapat terlebih dahulu baru menyelesaikan urusan lainnya.",
+                    "Mengerjakan bahan presentasi pimpinan hingga selesai penuh.",
+                    "Menyerahkan seluruh tugas kepada rekan piket lain.",
+                    "Meminta WNA tersebut datang kembali esok hari."
+                ],
+                scores: [4, 1, 2, 0, 0],
+                correct: 0,
+                explanation: "Prioritas didasarkan pada risiko hukum legal publik (overstay WNA) dan tenggat waktu kritis (*deadlines*)."
+            },
+            {
+                id: 25, category: "C. Penentuan Prioritas", competency: "Pengambilan keputusan dan prioritas",
+                scenario: "Dokumen pengajuan izin melintas batas wilayah negara ditemukan memiliki ketidaksesuaian stempel keabsahan, namun bus rombongan sudah bersiap berangkat.",
+                question: "Apakah keputusan paling tepat?",
+                options: [
+                    "Meloloskan bus demi menepati jadwal perjalanan rombongan.",
+                    "Menahan sementara dokumen yang diragukan untuk dilakukan verifikasi cepat ke instansi pembuat, seraya memberi penjelasan sopan kepada koordinator bus.",
+                    "Menolak seluruh rombongan tanpa memberikan kesempatan verifikasi.",
+                    "Meminta imbalan uang jaminan agar dokumen diloloskan.",
+                    "Menyuruh rombongan jalan terus dan melapor di pos berikutnya."
+                ],
+                scores: [0, 4, 1, 0, 0],
+                correct: 1,
+                explanation: "Keseimbangan ketegasan pengawasan perbatasan dan keramahan prosedur (*security vs service*)."
+            },
+            {
+                id: 26, category: "C. Penentuan Prioritas", competency: "Pengambilan keputusan dan prioritas",
+                scenario: "Anda menerima laporan adanya indikasi barang terlarang masuk ke dalam blok hunian pemasyarakatan bersamaan dengan jadwal sidak berkala kementerian.",
+                question: "Apakah tindakan prioritas yang harus diambil?",
+                options: [
+                    "Menunda penggeledahan hingga acara sidak kementerian selesai.",
+                    "Segera melaporkan indikasi kepada Kepala Pengamanan (KAPATUGAS) untuk melakukan penindakan penggeledahan terukur tanpa mengganggu jalannya sidak.",
+                    "Langsung menerobos blok secara mandiri tanpa berkoordinasi.",
+                    "Menyembunyikan informasi tersebut agar reputasi instansi terjaga saat sidak.",
+                    "Mengumpulkan seluruh warga binaan di lapangan terbuka."
+                ],
+                scores: [1, 4, 0, 0, 1],
+                correct: 1,
+                explanation: "Eskalasi pengamanan deteksi dini bahaya keamanan melalui jalur komando operasional."
+            },
+            {
+                id: 27, category: "C. Penentuan Prioritas", competency: "Pengambilan keputusan dan prioritas",
+                scenario: "Anda sedang mengerjakan penyusunan anggaran tahunan yang sangat ketat tenggat waktunya, ketika atasan meminta Anda secara mendadak mengantar tamu kunjungan dinas keliling fasilitas.",
+                question: "Apakah tindakan paling proaktif?",
+                options: [
+                    "Menolak perintah atasan karena sedang fokus pada anggaran.",
+                    "Mengantar tamu dengan segera dan membiarkan anggaran terbengkalai.",
+                    "Berkoordinasi dengan atasan mengenai posisi tenggat anggaran, serta menyarankan rekan tim lain yang kompeten untuk memandu tamu.",
+                    "Mengantar tamu dengan terburu-buru agar bisa cepat kembali bekerja.",
+                    "Mengerjakan anggaran sambil berjalan mengantar tamu."
+                ],
+                scores: [1, 1, 4, 2, 0],
+                correct: 2,
+                explanation: "Komunikasi efisiensi penugasan (*negotiation of task assignment*) untuk mengamankan dua output."
+            },
+            {
+                id: 28, category: "C. Penentuan Prioritas", competency: "Pengambilan keputusan dan prioritas",
+                scenario: "Terjadi bentrok verbal antara dua kelompok warga binaan di dalam blok. Di tempat terpisah, seorang petugas mengalami cidera fisik akibat terjatuh saat patroli.",
+                question: "Langkah penanganan prioritas yang paling tepat adalah?",
+                options: [
+                    "Fokus total menangani petugas cedera baru mengurus potensi bentrok.",
+                    "Membagi perkuatan tim: Satu tim medis/petugas menolong korban, sementara tim pengamanan utama mengisolasi area potensi bentrok.",
+                    "Meninggalkan kedua lokasi untuk melapor ke pos eksternal.",
+                    "Meminta warga binaan membubarkan diri secara mandiri lewat pengeras suara.",
+                    "Mengarahkan seluruh personel terkonsentrasi pada penanganan cedera petugas."
+                ],
+                scores: [1, 4, 0, 1, 1],
+                correct: 1,
+                explanation: "Manajemen penanganan insiden ganda secara simultan melalui pembagian perkuatan tim."
+            },
+            {
+                id: 29, category: "C. Penentuan Prioritas", competency: "Pengambilan keputusan dan prioritas",
+                scenario: "Anda menemukan bahwa data cadangan (backup) server paspor belum diperbarui selama seminggu terakhir karena kelalaian jadwal otomasi.",
+                question: "Tindakan pertama yang paling krusial dilakukan adalah?",
+                options: [
+                    "Mencari siapa petugas yang lalai menjalankan jadwal.",
+                    "Segera menjalankan proses manual backup data menyeluruh saat itu juga untuk meminimalkan risiko kehilangan data.",
+                    "Melaporkan kegagalan tersebut ke kementerian pusat.",
+                    "Membiarkannya hingga jadwal otomasi berikutnya berjalan.",
+                    "Mereset seluruh server jaringan imigrasi."
+                ],
+                scores: [1, 4, 2, 0, 0],
+                correct: 1,
+                explanation: "Tindakan kontinjensi pemulihan sistem (*disaster recovery priority*) mendahului evaluasi kesalahan."
+            },
+            {
+                id: 30, category: "C. Penentuan Prioritas", competency: "Pengambilan keputusan dan prioritas",
+                scenario: "Dua berkas permohonan visa masuk bersamaan: Berkas A milik investor asing berpotensi tinggi tetapi ada kekurangan lampiran teknis, Berkas B milik wisatawan biasa dengan dokumen lengkap.",
+                question: "Manakah tindakan prioritas yang adil dan tepat?",
+                options: [
+                    "Memproses Berkas A terlebih dahulu dan mengabaikan kekurangan dokumennya.",
+                    "Memproses Berkas B yang sudah lengkap sesuai antrean, sambil meminta pemohon Berkas A melengkapi persyaratan kekurangan dokumennya.",
+                    "Menolak Berkas A dan hanya fokus pada Berkas B.",
+                    "Menahan Berkas B sampai Berkas A selesai dilengkapi.",
+                    "Meminta bayaran tambahan untuk mempercepat verifikasi Berkas A."
+                ],
+                scores: [0, 4, 1, 0, 0],
+                correct: 1,
+                explanation: "Prinsip kepastian hukum dan persamaan perlakuan di muka hukum (*equal treatment*)."
+            },
+
+            // KATEGORI D: Disiplin, Kepatuhan, dan Respons Instruksi (8 Soal)
+            {
+                id: 31, category: "D. Disiplin dan Kepatuhan", competency: "Kepatuhan dan disiplin",
+                scenario: "Atasan memberikan instruksi untuk mempercepat proses pemeriksaan paspor dengan cara melompati tahap pencocokan biometric sidik jari demi mengurai antrean panjang.",
+                question: "Apakah respons tindakan yang tepat?",
+                options: [
+                    "Patuh melaksanakan instruksi atasan tanpa membantah.",
+                    "Menjelaskan secara profesional bahwa verifikasi biometric adalah standar keamanan mutlak regulasi yang tidak dapat dilompati, serta menawarkan opsi percepatan verifikasi fisik pendukung.",
+                    "Menolak secara kasar di depan para pemohon paspor.",
+                    "Pura-pura menjalankan pencocokan biometric padahal tidak dilakukan.",
+                    "Melaporkan atasan ke pihak kepolisian."
+                ],
+                scores: [0, 4, 1, 0, 1],
+                correct: 1,
+                explanation: "Prosedur keselamatan/keamanan negara adalah batas mutlak ketaatan (*non-negotiable SOP*)."
+            },
+            {
+                id: 32, category: "D. Disiplin dan Kepatuhan", competency: "Kepatuhan dan disiplin",
+                scenario: "Terdapat perubahan jadwal piket malam secara mendadak yang menugaskan Anda menggantikan rekan yang sakit, bersamaan dengan acara keluarga yang sudah lama Anda rencanakan.",
+                question: "Bagaimanakah sikap kedinasan Anda?",
+                options: [
+                    "Menolak tugas pengganti karena jadwal diumumkan terlalu mendadak.",
+                    "Menerima tugas piket pengganti dengan penuh rasa tanggung jawab sebagai wujud kesiapan dinas, serta mengomunikasikan penyesuaian acara keluarga.",
+                    "Mencari taruna/petugas lain untuk menggantikan posisi Anda tanpa melapor supervisor.",
+                    "Datang piket tetapi meninggalkan pos sebelum masa tugas selesai.",
+                    "Mengabaikan panggilan dinas dan mematikan telepon."
+                ],
+                scores: [1, 4, 2, 0, 0],
+                correct: 1,
+                explanation: "Loyalitas dan kesiapan penugasan kedinasan (*readiness*) berada di atas kepentingan pribadi."
+            },
+            {
+                id: 33, category: "D. Disiplin dan Kepatuhan", competency: "Kepatuhan dan disiplin",
+                scenario: "Dalam latihan kesamaptaan, instruktur memberikan petunjuk cara penggunaan perlengkapan penanggulangan huru-hara yang bertentangan dengan buku panduan keselamatan resmi.",
+                question: "Apakah tindakan yang paling tepat?",
+                options: [
+                    "Mengikuti petunjuk instruktur tanpa bertanya.",
+                    "Mengonfirmasi kejanggalan secara sopan kepada instruktur dengan merujuk pada buku panduan keselamatan saat jeda instruksi.",
+                    "Meneriaki instruktur bahwa petunjuknya salah dan berbahaya.",
+                    "Mogok mengikuti latihan kesamaptaan.",
+                    "Mengabaikan kedua panduan dan menggunakan cara sendiri."
+                ],
+                scores: [1, 4, 0, 0, 0],
+                correct: 1,
+                explanation: "Clarification chain: Mengklarifikasi secara santun demi menjaga prinsip keselamatan kerja (*safety compliance*)."
+            },
+            {
+                id: 34, category: "D. Disiplin dan Kepatuhan", competency: "Kepatuhan dan disiplin",
+                scenario: "Kebiasaan di unit kerja Anda membiarkan pintu gerbang pos pelapis terbuka saat jam istirahat siang, padahal tata tertib tertulis menyatakan pintu wajib dikunci 24 jam.",
+                question: "Bagaimana Anda bersikap?",
+                options: [
+                    "Mengikuti kebiasaan senior agar diterima dalam lingkungan.",
+                    "Tetap mengunci pintu pos sesuai tata tertib tertulis dan mengomunikasikan alasannya secara kolektif.",
+                    "Melaporkan seluruh staf unit ke inspektorat.",
+                    "Membuka pintu lebih lebar agar akses lebih mudah.",
+                    "Membiarkan pintu terbuka hanya jika ada petugas di sekitarnya."
+                ],
+                scores: [0, 4, 1, 0, 2],
+                correct: 1,
+                explanation: "Aturan tertulis resmi memiliki kekuatan hukum dan operasional mengalahkan *bad habit* pergaulan."
+            },
+            {
+                id: 35, category: "D. Disiplin dan Kepatuhan", competency: "Ketagasan profesional",
+                scenario: "Seorang warga binaan menolak kembali ke kamar hunian saat jam masuk sel karena alasan ingin menyelesaikan menonton tayangan televisi di ruang bersama.",
+                question: "Apakah respons disiplin yang tepat?",
+                options: [
+                    "Memberikan toleransi tambahan waktu 1 jam.",
+                    "Menjelaskan jadwal aturan tertib secara tegas, humanis, dan mengarahkan warga binaan untuk kembali ke kamar hunian sesuai tata tertib.",
+                    "Menggunakan kekerasan fisik untuk menyeret warga binaan.",
+                    "Membiarkan warga binaan di luar dan mengunci kamar huniannya dari luar.",
+                    "Mengancam akan mencabut seluruh hak remisinya saat itu juga."
+                ],
+                scores: [1, 4, 0, 0, 2],
+                correct: 1,
+                explanation: "Ketegasan berlandaskan regulasi yang dilaksanakan secara persuasif-humanis."
+            },
+            {
+                id: 36, category: "D. Disiplin dan Kepatuhan", competency: "Kepatuhan dan disiplin",
+                scenario: "Anda mendapati adanya kesalahan input penggolongan hukuman disiplin warga binaan yang dibuat oleh staf administrasi senior.",
+                question: "Langkah yang paling tepat adalah?",
+                options: [
+                    "Mengubah sendiri data tersebut tanpa memberitahu siapa pun.",
+                    "Mengklarifikasi temuan kesalahan data kepada staf pembuat secara sopan agar dilakukan koreksi resmi bersama.",
+                    "Membiarkan data salah tersebut karena merasa bukan wewenang Anda.",
+                    "Melaporkan kelalaian staf tersebut ke media massa.",
+                    "Menertawakan kesalahan tersebut di depan staf lain."
+                ],
+                scores: [1, 4, 1, 0, 0],
+                correct: 1,
+                explanation: "Koreksi data berjenjang dengan mengedepankan etika komunikasi sejawat."
+            },
+            {
+                id: 37, category: "D. Disiplin dan Kepatuhan", competency: "Kepatuhan dan disiplin",
+                scenario: "Atasan memerintahkan penyemprotan disinfektan di ruang tahanan imigrasi tanpa memindahkan para deteni (tahanan imigrasi) terlebih dahulu.",
+                question: "Apakah tindakan respons terbaik Anda?",
+                options: [
+                    "Langsung melaksanakan perintah tanpa memikirkan dampak kesehatan.",
+                    "Mengingatkan atasan terkait protokol keselamatan kesehatan deteni dan memohon izin untuk memindahkan deteni sementara sebelum penyemprotan.",
+                    "Menolak melakukan penyemprotan dan meninggalkan lokasi kerja.",
+                    "Menyemprotkan cairan ke arah muka para deteni.",
+                    "Meminta para deteni menyemprotkan cairan itu sendiri."
+                ],
+                scores: [0, 4, 1, 0, 0],
+                correct: 1,
+                explanation: "Protokol perlindungan Hak Asasi Manusia (HAM) dan standar keselamatan kesehatan kerja K3."
+            },
+            {
+                id: 38, category: "D. Disiplin dan Kepatuhan", competency: "Kepatuhan dan disiplin",
+                scenario: "Anda mendapatkan instruksi tertulis yang membingungkan dengan kriteria pertentangan pasal pada lembar lampiran pengawasan keagenan kapal.",
+                question: "Apakah tindakan yang paling tepat?",
+                options: [
+                    "Menebak-nebak maksud instruksi dan menjalankannya sesuai asumsi pribadi.",
+                    "Meminta konfirmasi dan penegasan resmi (*official clarification*) kepada pembuat instruksi/atasan sebelum penindakan lapangan.",
+                    "Mengabaikan instruksi tersebut dan tidak mengerjakan tugas.",
+                    "Melaksanakan bagian instruksi yang paling mudah saja.",
+                    "Menggunakan panduan dari instansi luar yang tidak resmi."
+                ],
+                scores: [0, 4, 0, 1, 0],
+                correct: 1,
+                explanation: "Klarifikasi resmi untuk menghindari kerugian prosedural fatal akibat asumsi pribadi."
+            },
+
+            // KATEGORI E: Evaluasi Efektivitas Respons (12 Soal)
+            // Sub-bagian E1: Rating Skala 1-5 (6 Soal)
+            {
+                id: 39, category: "E. Evaluasi Efektivitas Respons", competency: "Pelayanan publik",
+                scenario: "Skenario: Seorang pemohon paspor marah besar karena antrean terhambat oleh gangguan jaringan server.",
+                question: "Tindakan: Petugas pelayanan memberikan penjelasan tenang mengenai masalah teknis yang terjadi, menyajikan minuman, dan memberikan nomor estimasi pemanggilan berkas.",
+                isLikert: true,
+                options: ["1. Sangat Tidak Efektif", "2. Tidak Efektif", "3. Cukup Efektif", "4. Efektif", "5. Sangat Efektif"],
+                scores: [0, 1, 2, 3, 4],
+                correct: 4,
+                explanation: "Tindakan ini 'Sangat Efektif' (Skor 5) karena mencakup empati, de-escalation emosi pemohon, serta kepastian solusi layanan."
+            },
+            {
+                id: 40, category: "E. Evaluasi Efektivitas Respons", competency: "Kerja sama dan penyelesaian konflik",
+                scenario: "Skenario: Terjadi perselisihan pendapat yang sengit antar anggota tim pengamanan mengenai efektivitas pembagian rotasi pos penjagaan.",
+                question: "Tindakan: Ketua tim menghentikan perdebatan secara sepihak dan memaksa semua anggota memakai skema lama tanpa evaluasi.",
+                isLikert: true,
+                options: ["1. Sangat Tidak Efektif", "2. Tidak Efektif", "3. Cukup Efektif", "4. Efektif", "5. Sangat Efektif"],
+                scores: [4, 3, 1, 0, 0],
+                correct: 0,
+                explanation: "Tindakan ini 'Sangat Tidak Efektif' (Skor 1) karena gaya otoriter tanpa evaluasi mematikan inovasi dan memicu konflik laten."
+            },
+            {
+                id: 41, category: "E. Evaluasi Efektivitas Respons", competency: "Pengendalian diri",
+                scenario: "Skenario: Seorang taruna menerima kritik tajam mengenai kekurangan tata tulisan laporan dari dosen pengampu di depan kelas.",
+                question: "Tindakan: Taruna tersebut mencatat setiap poin kritik, mengucapkan terima kasih, dan meminta waktu konsultasi pribadi untuk perbaikan.",
+                isLikert: true,
+                options: ["1. Sangat Tidak Efektif", "2. Tidak Efektif", "3. Cukup Efektif", "4. Efektif", "5. Sangat Efektif"],
+                scores: [0, 0, 1, 3, 4],
+                correct: 4,
+                explanation: "Tindakan ini 'Sangat Efektif' (Skor 5) memperlihatkan kedewasaan emosi, ketahanan mental, dan orientasi belajar."
+            },
+            {
+                id: 42, category: "E. Evaluasi Efektivitas Respons", competency: "Integritas",
+                scenario: "Skenario: Pengunjung lembaga pemasyarakatan mencoba menyelipkan uang tunai ke dalam lipatan baju petugas pemeriksaan.",
+                question: "Tindakan: Petugas mengambil uang tersebut lalu membuangnya ke tempat sampah di depan pengunjung.",
+                isLikert: true,
+                options: ["1. Sangat Tidak Efektif", "2. Tidak Efektif", "3. Cukup Efektif", "4. Efektif", "5. Sangat Efektif"],
+                scores: [4, 3, 1, 0, 0],
+                correct: 0,
+                explanation: "Tindakan ini 'Sangat Tidak Efektif' (Skor 1) karena merusak barang bukti gratifikasi/suap dan tidak sesuai SOP penindakan pelanggaran hukum."
+            },
+            {
+                id: 43, category: "E. Evaluasi Efektivitas Respons", competency: "Penentuan prioritas",
+                scenario: "Skenario: Petugas loket pendaftaran imigrasi dihadapkan pada tumpukan dokumen yang belum diverifikasi saat jam istirahat tiba.",
+                question: "Tindakan: Petugas melanjutkan pekerjaan tanpa istirahat dan tanpa makan siang hingga seluruh dokumen selesai malam hari.",
+                isLikert: true,
+                options: ["1. Sangat Tidak Efektif", "2. Tidak Efektif", "3. Cukup Efektif", "4. Efektif", "5. Sangat Efektif"],
+                scores: [1, 4, 2, 0, 0],
+                correct: 1,
+                explanation: "Tindakan ini 'Tidak Efektif' (Skor 2) karena merusak ketahanan fisik dan memicu risiko tingginya kelalaian (*human error*) akibat kelelahan."
+            },
+            {
+                id: 44, category: "E. Evaluasi Efektivitas Respons", competency: "Adaptabilitas dan orientasi tugas",
+                scenario: "Skenario: Instansi menerapkan software pendaftaran berbasis biometrik wajah baru yang belum dipelajari oleh staf lama.",
+                question: "Tindakan: Staf senior mengajukan permohonan ke pimpinan untuk tetap menggunakan metode verifikasi manual lama secara permanen.",
+                isLikert: true,
+                options: ["1. Sangat Tidak Efektif", "2. Tidak Efektif", "3. Cukup Efektif", "4. Efektif", "5. Sangat Efektif"],
+                scores: [4, 3, 1, 0, 0],
+                correct: 0,
+                explanation: "Tindakan ini 'Sangat Tidak Efektif' (Skor 1) menunjukkan penolakan terhadap modernisasi dan adaptabilitas digital."
+            },
+
+            // Sub-bagian E2: Komparasi, Evaluasi Paling Tidak Tepat & Konsekuensi (6 Soal)
+            {
+                id: 45, category: "E. Evaluasi Efektivitas Respons", competency: "Pengambilan keputusan dan prioritas",
+                scenario: "Manakah tindakan yang **PALING TIDAK TEPAT** dilakukan saat menemukan adanya keretakan pada dinding pembatas luar blok hunian pemasyarakatan?",
+                question: "Pilihlah opsi tindakan dengan kelemahan paling mendasar!",
+                options: [
+                    "Melaporkan segera kepada Kepala Subseksi Sarana Kerja.",
+                    "Menutup keretakan tersebut dengan poster propaganda tanpa melapor agar tidak memicu kepanikan.",
+                    "Mendokumentasikan dimensi keretakan untuk bahan analisis teknis.",
+                    "Memindahkan sementara warga binaan dari sel yang berbatasan langsung dengan dinding retak.",
+                    "Meningkatkan frekuensi pengawasan pos atas di sekitar dinding retak."
+                ],
+                scores: [3, 0, 3, 4, 3],
+                correct: 1,
+                explanation: "Opsi B adalah tindakan PALING TIDAK TEPAT (Skor 0) karena menyembunyikan bahaya fatal fisik keselamatan bangunan (*structural hazard*)."
+            },
+            {
+                id: 46, category: "E. Evaluasi Efektivitas Respons", competency: "Pelayanan publik",
+                scenario: "Seorang warga negara asing keliru mengisi formulir kedatangan dan bersikap tidak sopan karena keterbatasan bahasa. Manakah tindakan yang **PALING TIDAK TEPAT**?",
+                question: "Pilihlah respons paling tidak efektif!",
+                options: [
+                    "Menggunakan aplikasi penerjemah bahasa untuk membantu komunikasi.",
+                    "Membentak WNA tersebut dengan bahasa lokal agar ia sadar akan kesalahannya.",
+                    "Memanggil petugas pemandu bahasa asing yang sedang bertugas.",
+                    "Memberikan contoh formulir yang telah terisi sebagai panduan visual.",
+                    "Membimbing WNA tersebut ke area loket bantuan khusus."
+                ],
+                scores: [3, 0, 4, 3, 3],
+                correct: 1,
+                explanation: "Membentak pemohon (Opsi B) adalah pelanggaran berat etika pelayanan publik dan profesionalisme aparatur."
+            },
+            {
+                id: 47, category: "E. Evaluasi Efektivitas Respons", competency: "Kerja sama dan penyelesaian konflik",
+                scenario: "Dua kelompok taruna berselisih paham mengenai hak penggunaan lapangan olahraga akademi. Manakah respons penyelesaian konflik yang **PALING EFEKTIF**?",
+                question: "Evaluasi respons terbaik dalam konflik perselisihan:",
+                options: [
+                    "Melarang kedua kelompok menggunakan lapangan sampai batas waktu yang tidak ditentukan.",
+                    "Mengaitkan masalah ini ke jalur hukuman disiplin fisik seluruh anggota kelompok.",
+                    "Memfasilitasi mediasi antarketua kelompok untuk menyusun jadwal penggunaan bersama secara bergantian dan adil.",
+                    "Membiarkan kedua kelompok menyelesaikan perselisihan dengan cara adu kekuatan.",
+                    "Memberikan hak penuh penggunaan lapangan kepada kelompok senior saja."
+                ],
+                scores: [1, 0, 4, 0, 1],
+                correct: 2,
+                explanation: "Mediasi win-win solution (Opsi C) menyusun regulasi konsensus yang adil dan berkelanjutan."
+            },
+            {
+                id: 48, category: "E. Evaluasi Efektivitas Respons", competency: "Tanggung jawab",
+                scenario: "Seorang staf lupa mengunci brankas penyimpanan paspor siap cetak sebelum pulang kantor. Manakah evaluasi konsekuensi keputusan yang paling tepat?",
+                question: "Menilai dampak dari kelalaian prosedur keamanan brankas:",
+                options: [
+                    "Kejadian ini adalah hal biasa jika tidak ada dokumen yang hilang.",
+                    "Merupakan pelanggaran berat prosedur keamanan arsip negara yang memicu potensi pencurian dan salah guna identitas.",
+                    "Dapat dimaklumi karena staf sedang berada dalam kondisi lelah.",
+                    "Cukup diselesaikan dengan saling mengingatkan antar staf tanpa perlu dicatat.",
+                    "Tanggung jawab sepenuhnya ada pada petugas satpam malam."
+                ],
+                scores: [0, 4, 1, 1, 0],
+                correct: 1,
+                explanation: "Pemahaman tingkat bahaya kebocoran/kehilangan dokumen negara akibat alpa pengamanan."
+            },
+            {
+                id: 49, category: "E. Evaluasi Efektivitas Respons", competency: "Ketegasan profesional",
+                scenario: "Bandingkan dua respons petugas pengawas saat menemukan barang terlarang HP di sel: Respons X langsung menyita HP dan mencatat registrasi pelanggaran. Respons Y menyita HP namun mengembalikannya esok hari setelah warga binaan menangis.",
+                question: "Evaluasi perbandingan kedua respons tersebut:",
+                options: [
+                    "Respons Y lebih efektif karena mengedepankan aspek kemanusiaan.",
+                    "Respons X jauh lebih efektif karena konsisten menegakkan aturan tanpa toleransi pelanggaran barang terlarang.",
+                    "Kedua respons sama-sama tidak efektif dalam menjaga ketertiban.",
+                    "Respons Y efektif untuk mencegah warga binaan depresi.",
+                    "Respons X terlalu kejam dan merusak hubungan dengan warga binaan."
+                ],
+                scores: [0, 4, 0, 0, 0],
+                correct: 1,
+                explanation: "Konsistensi penegakan aturan integritas pengamanan (Respons X) adalah kunci utama ketertiban institusi."
+            },
+            {
+                id: 50, category: "E. Evaluasi Efektivitas Respons", competency: "Integritas",
+                scenario: "Evaluasi tindakan seorang pimpinan yang menolak secara terbuka komisi insentif tidak resmi dari pihak agen travel umrah/haji.",
+                question: "Manakah penilaian efektivitas yang paling tepat terhadap pimpinan tersebut?",
+                options: [
+                    "Sangat Efektif dalam membangun budaya kerja bersih dari korupsi dan contoh teladan integritas.",
+                    "Sangat Tidak Efektif karena merugikan kesejahteraan dana kesejahteraan staf.",
+                    "Cukup Efektif namun seharusnya penolakan dilakukan secara rahasia.",
+                    "Tidak Efektif karena dapat merusak hubungan baik dengan agen travel.",
+                    "Biasa saja karena memang sudah menjadi kewajiban standar."
+                ],
+                scores: [4, 0, 2, 0, 1],
+                correct: 0,
+                explanation: "Sikap keteladanan integritas pimpinan (*role modeling*) secara terbuka memperkuat zona integritas lembaga."
+            }
+        ];
+
+        // RENDER VARIABEL & STATE
+        let userAnswers = {};
+        let currentIdx = 0;
+        let timerInterval = null;
+        let totalTimeSeconds = 60 * 60; // 60 Menit
+        let startTimeStamp = 0;
+
+        // FUNGSI MEMULAI TES
+        function startTest() {
+            const nameInput = document.getElementById('inName').value.trim();
+            if (nameInput.length < 3) {
+                alert("Harap masukkan nama lengkap Anda (minimal 3 karakter)!");
+                return;
+            }
+
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('test-screen').style.display = 'block';
+
+            startTimeStamp = Date.now();
+            initNavGrid();
+            renderQuestion();
+            startTimer();
+        }
+
+        // TIMER ACCURATE TIMESTAMP
+        function startTimer() {
+            const timerDisplay = document.getElementById('timer');
+            
+            timerInterval = setInterval(() => {
+                const elapsedSeconds = Math.floor((Date.now() - startTimeStamp) / 1000);
+                const remainingSeconds = totalTimeSeconds - elapsedSeconds;
+
+                if (remainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.innerText = "00:00";
+                    alert("Waktu pengerjaan telah habis! Sistem akan mengumpulkan jawaban Anda secara otomatis.");
+                    autoSubmit();
+                    return;
+                }
+
+                if (remainingSeconds <= 300) { // 5 Menit Terakhir
+                    timerDisplay.classList.add('timer-warning');
+                }
+
+                const m = Math.floor(remainingSeconds / 60);
+                const s = remainingSeconds % 60;
+                timerDisplay.innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+            }, 1000);
+        }
+
+        // INITIALIZE NAV GRID
+        function initNavGrid() {
+            const grid = document.getElementById('nav-grid');
+            grid.innerHTML = '';
+            rawQuestions.forEach((_, i) => {
+                const item = document.createElement('div');
+                item.className = 'nav-item';
+                item.id = `nav-item-${i}`;
+                item.innerText = i + 1;
+                item.onclick = () => { currentIdx = i; renderQuestion(); };
+                grid.appendChild(item);
+            });
+        }
+
+        // RENDER TAMPILAN SOAL
+        function renderQuestion() {
+            const q = rawQuestions[currentIdx];
+            
+            document.getElementById('q-cat').innerText = `KATEGORI: ${q.category.toUpperCase()}`;
+            document.getElementById('q-num').innerText = `SOAL ${currentIdx + 1} / ${rawQuestions.length}`;
+            document.getElementById('q-scenario').innerText = q.scenario;
+            document.getElementById('q-text').innerText = q.question;
+
+            const optsContainer = document.getElementById('options');
+            optsContainer.innerHTML = '';
+
+            const keys = ['A', 'B', 'C', 'D', 'E'];
+            q.options.forEach((optText, optIdx) => {
+                const optDiv = document.createElement('div');
+                const isSelected = userAnswers[currentIdx] === optIdx;
+                optDiv.className = `opt ${isSelected ? 'selected' : ''}`;
+                
+                // AUTO-NEXT INTEGRATION ON CLICK
+                optDiv.onclick = () => selectOption(optIdx);
+
+                const keySpan = document.createElement('span');
+                keySpan.className = 'opt-key';
+                keySpan.innerText = keys[optIdx];
+
+                const textSpan = document.createElement('span');
+                textSpan.innerText = optText;
+
+                optDiv.appendChild(keySpan);
+                optDiv.appendChild(textSpan);
+                optsContainer.appendChild(optDiv);
+            });
+
+            // Update Nav Styles
+            document.querySelectorAll('.nav-item').forEach((el, idx) => {
+                el.classList.remove('active');
+                if (userAnswers[idx] !== undefined) el.classList.add('filled');
+                if (idx === currentIdx) el.classList.add('active');
+            });
+
+            window.scrollTo(0, 0);
+        }
+
+        // SELECT OPTION WITH AUTO-NEXT
+        function selectOption(optIdx) {
+            userAnswers[currentIdx] = optIdx;
+            renderQuestion();
+
+            // Auto-next delay smooth transition
+            if (currentIdx < rawQuestions.length - 1) {
+                setTimeout(() => {
+                    currentIdx++;
+                    renderQuestion();
+                }, 250);
+            }
+        }
+
+        // NAVIGATION
+        function nav(dir) {
+            const newIdx = currentIdx + dir;
+            if (newIdx >= 0 && newIdx < rawQuestions.length) {
+                currentIdx = newIdx;
+                renderQuestion();
+            }
+        }
+
+        // CONFIRM FINISH
+        function confirmFinish() {
+            const answeredCount = Object.keys(userAnswers).length;
+            const unanswered = rawQuestions.length - answeredCount;
+
+            let msg = `Anda telah menjawab ${answeredCount} dari ${rawQuestions.length} soal.`;
+            if (unanswered > 0) {
+                msg += `\nMasih ada ${unanswered} soal yang BELUM dijawab. Yakin ingin mengumpulkan tes sekarang?`;
+            } else {
+                msg += `\nYakin ingin mengumpulkan dan menyelesaikan simulasi tes ini?`;
+            }
+
+            if (confirm(msg)) {
+                finishTest();
+            }
+        }
+
+        function autoSubmit() {
+            finishTest();
+        }
+
+        // HITUNG PENILAIAN & EVALUASI HASIL
+        function finishTest() {
+            clearInterval(timerInterval);
+
+            document.getElementById('test-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+
+            let totalScoreEarned = 0;
+            let maxScorePossible = 0;
+
+            // Map Rekap Kompetensi
+            const compScores = {};
+            const compMax = {};
+
+            rawQuestions.forEach((q, i) => {
+                const userOpt = userAnswers[i];
+                const score = (userOpt !== undefined) ? q.scores[userOpt] : 0;
+                totalScoreEarned += score;
+
+                // Max Poin Soal Ini
+                const maxQuestionScore = Math.max(...q.scores);
+                maxScorePossible += maxQuestionScore;
+
+                // Hitung per Kompetensi
+                const comp = q.competency;
+                compScores[comp] = (compScores[comp] || 0) + score;
+                compMax[comp] = (compMax[comp] || 0) + maxQuestionScore;
+            });
+
+            const percentage = ((totalScoreEarned / maxScorePossible) * 100).toFixed(1);
+            const userName = document.getElementById('inName').value;
+
+            document.getElementById('res-name').innerText = `PESERTA: ${userName}`;
+            document.getElementById('res-date').innerText = `Waktu Selesai: ${new Date().toLocaleString('id-ID')}`;
+            document.getElementById('res-score').innerText = `${totalScoreEarned} / ${maxScorePossible}`;
+            document.getElementById('res-pct').innerText = `${percentage}%`;
+
+            // Render Radar Chart Kompetensi
+            renderRadarChart(compScores, compMax);
+
+            // Render Ringkasan Profil Performa
+            renderSummary(percentage, compScores, compMax);
+
+            // Render Pembahasan Lengkap Per Soal
+            renderReview(compScores);
+
+            window.scrollTo(0, 0);
+        }
+
+        // RADAR CHART GENERATOR
+        function renderRadarChart(compScores, compMax) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            const labels = Object.keys(compScores);
+            const dataPercentages = labels.map(l => ((compScores[l] / compMax[l]) * 100).toFixed(1));
+
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Persentase Pencapaian Kompetensi (%)',
+                        data: dataPercentages,
+                        backgroundColor: 'rgba(15, 23, 42, 0.2)',
+                        borderColor: '#0f172a',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#800000'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 100,
+                            ticks: { stepSize: 20 }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        // RINGKASAN REKOMENDASI LATIHAN
+        function renderSummary(pct, compScores, compMax) {
+            const box = document.getElementById('res-summary');
+            let strongComps = [];
+            let weakComps = [];
+
+            Object.keys(compScores).forEach(c => {
+                const ratio = compScores[c] / compMax[c];
+                if (ratio >= 0.75) strongComps.push(c);
+                else weakComps.push(c);
+            });
+
+            let html = `<strong>RANGKUMAN PROFIL PERFORMA SIMULASI:</strong><br>`;
+            html += `<p>Secara keseluruhan, Anda mencapai tingkat penguasaan pertimbangan keputusan sebesar <strong>${pct}%</strong>.</p>`;
+            
+            if (strongComps.length > 0) {
+                html += `<p style="color:var(--success);"><strong>Kompetensi Relatif Menonjol:</strong> ${strongComps.join(', ')}.</p>`;
+            }
+            if (weakComps.length > 0) {
+                html += `<p style="color:var(--danger);"><strong>Domain Perlu Peningkatan Focus:</strong> ${weakComps.join(', ')}.</p>`;
+            }
+
+            html += `<p><em>Catatan Latihan: Laporan ini merupakan profil performa simulasi mandiri guna melatih pola pikir pertimbangan situasi (Situational Judgment) dan bukan merupakan diagnosa kelulusan resmi seleksi Poltekimipas.</em></p>`;
+            box.innerHTML = html;
+        }
+
+        // PEMBAHASAN DETAIL TIAP SOAL
+        function renderReview() {
+            const container = document.getElementById('review-container');
+            container.innerHTML = '';
+
+            const keys = ['A', 'B', 'C', 'D', 'E'];
+
+            rawQuestions.forEach((q, i) => {
+                const userOpt = userAnswers[i];
+                const card = document.createElement('div');
+                card.className = 'review-card';
+
+                const userEarnedScore = (userOpt !== undefined) ? q.scores[userOpt] : 0;
+                const maxOptScore = Math.max(...q.scores);
+
+                let optHtml = '';
+                q.options.forEach((optText, optIdx) => {
+                    let optClass = 'review-opt';
+                    let labelExtra = '';
+
+                    if (optIdx === q.correct) {
+                        optClass += ' review-opt-best';
+                        labelExtra += ` <strong>[Skor Tertinggi: ${q.scores[optIdx]}]</strong>`;
+                    } else {
+                        labelExtra += ` (Skor: ${q.scores[optIdx]})`;
+                    }
+
+                    if (userOpt === optIdx) {
+                        optClass += ' review-opt-user';
+                        labelExtra += ` &larr; <strong>[PILIHAN ANDA]</strong>`;
+                    }
+
+                    optHtml += `<div class="${optClass}">${keys[optIdx]}. ${optText} ${labelExtra}</div>`;
+                });
+
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-muted); font-weight:bold; margin-bottom:8px;">
+                        <span>NO. ${i + 1} | ${q.category.toUpperCase()}</span>
+                        <span class="badge badge-score">Skor Perolehan: ${userEarnedScore} / ${maxOptScore}</span>
+                    </div>
+                    <div style="font-size:0.9rem; font-weight:600; margin-bottom:8px; color:var(--primary);">${q.scenario}</div>
+                    <div style="font-size:0.95rem; font-weight:700; margin-bottom:12px;">${q.question}</div>
+                    <div style="margin-bottom:15px;">${optHtml}</div>
+                    <div style="background:#f1f5f9; padding:12px; border-radius:6px; font-size:0.85rem; border-left:4px solid var(--primary);">
+                        <strong>Kompetensi Diukur:</strong> ${q.competency}<br>
+                        <strong>Pembahasan & Rasionalisasi:</strong> ${q.explanation}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // UNDUH LAPORAN PDF
+        function downloadPDF() {
+            const element = document.getElementById('pdf-content');
+            const userName = document.getElementById('inName').value || 'Peserta';
+            const opt = {
+                margin: 8,
+                filename: `Laporan_CAT_Poltekimipas_${userName}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 1.5 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().from(element).set(opt).save();
+        }
+    </script>
+</body>
+</html>
